@@ -3,13 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Món Quà 8/3 Đặc Biệt</title>
+    <title>Món Quà Đặc Biệt 8/3</title>
     <style>
         :root {
             --pink-dark: #ff1493;
             --pink-light: #ffb6c1;
-            --book-cover: #d4145a;
-            --paper-bg: #fffef0;
         }
 
         body, html {
@@ -24,6 +22,7 @@
             color: white;
         }
 
+        /* Nền sao rơi */
         #bgCanvas {
             position: fixed;
             top: 0; left: 0;
@@ -60,115 +59,89 @@
             text-shadow: 0 0 10px var(--pink-dark);
         }
 
-        /* 3. Ảnh trôi tự do ngẫu nhiên */
-        #photo-float-container {
-            display: none;
+        /* 3. HIỆU ỨNG ẢNH CHẠY LƯỚT XUỐNG (Background Slider) */
+        #photo-slider-bg {
+            display: none; /* Chỉ hiện sau khi chạy chữ xong */
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
             z-index: 5;
-            pointer-events: none;
-        }
-        .floating-img {
-            position: absolute;
-            width: 180px;
-            border-radius: 12px;
-            border: 4px solid #fff;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-            opacity: 0.5;
-            animation: floatDown linear infinite;
-        }
-        @keyframes floatDown {
-            from { transform: translateY(-110vh) rotate(var(--rot)); }
-            to { transform: translateY(110vh) rotate(var(--rot)); }
+            display: flex;
+            justify-content: space-around;
+            opacity: 0.4; /* Làm mờ để nổi bật nút bấm */
         }
 
-        /* 4. PHẦN THIỆP QUYỂN VỞ NÂNG CẤP */
+        .photo-column {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            animation: scrollDown 20s linear infinite;
+        }
+
+        /* Cột 2 chạy ngược lại hoặc tốc độ khác cho sinh động */
+        .column-reverse {
+            animation: scrollDown 25s linear infinite reverse;
+        }
+
+        @keyframes scrollDown {
+            0% { transform: translateY(-50%); }
+            100% { transform: translateY(0%); }
+        }
+
+        .slider-img {
+            width: 120px;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 2px solid white;
+        }
+
+        /* 4. Nút Mở Quà nằm trên cùng */
         #main-content {
             display: none;
             position: relative;
-            z-index: 1000;
-            perspective: 2000px; /* Tạo độ sâu 3D */
-        }
-
-        .book {
-            position: relative;
-            width: 320px;
-            height: 440px;
-            transform-style: preserve-3d;
-            transition: transform 0.8s ease;
-        }
-
-        /* Lớp bìa trước */
-        .book-cover {
-            position: absolute;
-            width: 100%; height: 100%;
-            background: linear-gradient(135deg, var(--book-cover) 0%, #8e0e3a 100%);
-            border-radius: 5px 15px 15px 5px;
-            box-shadow: 10px 10px 30px rgba(0,0,0,0.5);
-            transform-origin: left;
-            transition: transform 1.2s cubic-bezier(0.645, 0.045, 0.355, 1);
             z-index: 20;
-            cursor: pointer;
-            display: flex;
             flex-direction: column;
+            align-items: center;
+        }
+
+        .btn-open-gift {
+            padding: 20px 50px;
+            background: var(--pink-dark);
+            border: none;
+            color: white;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.5rem;
+            box-shadow: 0 0 30px var(--pink-dark);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* 5. Lời chúc cuối */
+        #overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 200;
             justify-content: center;
             align-items: center;
-            border-left: 10px solid #6b0a2d; /* Gáy vở dày */
         }
-
-        /* Lớp trang giấy bên trong */
-        .book-page {
-            position: absolute;
-            width: 96%; height: 96%;
-            top: 2%; left: 2%;
-            background: var(--paper-bg);
-            background-image: linear-gradient(#e0e0e0 1px, transparent 1px);
-            background-size: 100% 30px; /* Dòng kẻ vở */
-            border-radius: 0 10px 10px 0;
-            z-index: 10;
-            padding: 40px 25px;
-            box-sizing: border-box;
-            color: #333;
-            box-shadow: inset 5px 0 15px rgba(0,0,0,0.1);
-        }
-
-        /* Đường kẻ lề đỏ trang vở */
-        .book-page::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 35px;
-            width: 2px; height: 100%;
-            background: rgba(255, 0, 0, 0.2);
-        }
-
-        /* Khi mở quyển vở */
-        .book.open .book-cover {
-            transform: rotateY(-160deg);
-        }
-
-        .book-cover h2 { font-size: 1.8rem; margin: 15px 0; font-family: serif; letter-spacing: 2px; }
-        .book-cover .icon { font-size: 4rem; animation: pulse 1.5s infinite; }
-
-        #typing-text {
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 1.05rem;
-            line-height: 30px; /* Khớp với dòng kẻ */
-            font-weight: bold;
-            color: #2c3e50;
-        }
-
-        #typing-text::after { content: '|'; animation: blink 0.7s infinite; color: var(--pink-dark); }
-        @keyframes blink { 50% { opacity: 0; } }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
-
-        .hint {
-            position: absolute;
-            bottom: -60px; width: 100%;
+        .gift-box {
+            background: #1a1a1a;
+            padding: 30px;
+            border: 2px solid var(--pink-dark);
+            border-radius: 20px;
             text-align: center;
-            color: var(--pink-light);
-            font-style: italic;
-            font-size: 0.9rem;
+            max-width: 300px;
         }
 
         .fade-in { animation: fadeIn 1s forwards; }
@@ -187,21 +160,22 @@
 
     <div id="text-sequence"></div>
 
-    <div id="photo-float-container"></div>
+    <div id="photo-slider-bg">
+        <div class="photo-column" id="col1"></div>
+        <div class="photo-column column-reverse" id="col2"></div>
+        <div class="photo-column" id="col3"></div>
+    </div>
 
     <div id="main-content">
-        <div class="book" id="myBook" onclick="toggleBook()">
-            <div class="book-cover">
-                <div class="icon">🌹</div>
-                <h2>Gửi Cậu</h2>
-                <small style="opacity: 0.7;">(Chạm để mở trang vở)</small>
-            </div>
-            <div class="book-page">
-                <h3 style="margin-top:0; color: var(--book-cover); font-family: serif;">Gửi bạn xinh xắn,</h3>
-                <div id="typing-text"></div>
-            </div>
+        <button class="btn-open-gift" onclick="showFinalGift()">Mở Quà Cho Cậu 🎁</button>
+    </div>
+
+    <div id="overlay" onclick="this.style.display='none'">
+        <div class="gift-box">
+            <h2 style="color: var(--pink-dark)">Happy Women's Day!</h2>
+            <p>Tớ hy vọng món quà nhỏ này làm cậu mỉm cười. Chúc cậu một ngày 8/3 thật ý nghĩa và trọn vẹn nhé! ❤️</p>
+            <small>(Bấm để đóng)</small>
         </div>
-        <div class="hint">Hãy lật mở điều bất ngờ bên trong...</div>
     </div>
 
     <script>
@@ -213,19 +187,17 @@
             "Đây là một chút kỷ niệm dành cho cậu..."
         ];
 
-        const fullMessage = "Tớ hy vọng món quà nhỏ này làm cậu mỉm cười. Chúc cậu một ngày 8/3 thật ý nghĩa, hạnh phúc và luôn là bông hoa rạng rỡ nhất nhé! Cảm ơn cậu vì đã luôn tuyệt vời. ❤️";
-
-        // LINK ẢNH CỦA BẠN
+        // LINK ẢNH CỦA BẠN (Thay vào đây nhé)
         const myImages = [
-            'https://picsum.photos/300/450?random=1',
-            'https://picsum.photos/300/450?random=2',
-            'https://picsum.photos/300/450?random=3',
-            'https://picsum.photos/300/450?random=4',
-            'https://picsum.photos/300/450?random=5'
+            'https://picsum.photos/200/300?random=1',
+            'https://picsum.photos/200/300?random=2',
+            'https://picsum.photos/200/300?random=3',
+            'https://picsum.photos/200/300?random=4',
+            'https://picsum.photos/200/300?random=5',
+            'https://picsum.photos/200/300?random=6'
         ];
 
         let currentPhrase = 0;
-        let typingStarted = false;
 
         function startExperience() {
             document.getElementById('start-screen').style.display = 'none';
@@ -238,9 +210,12 @@
             const textEl = document.getElementById('text-sequence');
             if (currentPhrase < phrases.length) {
                 textEl.innerText = phrases[currentPhrase];
-                textEl.className = 'fade-in';
+                textEl.classList.remove('fade-out');
+                textEl.classList.add('fade-in');
+
                 setTimeout(() => {
-                    textEl.className = 'fade-out';
+                    textEl.classList.remove('fade-in');
+                    textEl.classList.add('fade-out');
                     setTimeout(() => {
                         currentPhrase++;
                         runTextSequence();
@@ -253,20 +228,51 @@
         }
 
         function showMainContent() {
-            document.getElementById('photo-float-container').style.display = 'block';
+            document.getElementById('photo-slider-bg').style.display = 'flex';
             document.getElementById('main-content').style.display = 'flex';
-            createFloatingImages();
+            populateSlider();
         }
 
-        function createFloatingImages() {
-            const container = document.getElementById('photo-float-container');
-            for (let i = 0; i < 25; i++) {
-                const img = document.createElement('img');
-                img.src = myImages[i % myImages.length];
-                img.className = 'floating-img';
-                img.style.left = Math.random() * 85 + '%';
-                img.style.animationDuration = (15 + Math.random() * 20) + 's';
-                img.style.animationDelay = (Math.random() * -30) + 's';
-                img.style.setProperty('--rot', (Math.random() - 0.5) * 45 + 'deg');
-                img.style.zIndex = Math.floor(Math.random() * 5);
-                container
+        function populateSlider() {
+            const columns = ['col1', 'col2', 'col3'];
+            columns.forEach(colId => {
+                const col = document.getElementById(colId);
+                // Nhân đôi mảng ảnh để tạo hiệu ứng lặp vô tận (Infinity scroll)
+                const doubleImages = [...myImages, ...myImages, ...myImages];
+                doubleImages.forEach(src => {
+                    const img = document.createElement('img');
+                    img.src = src;
+                    img.className = 'slider-img';
+                    col.appendChild(img);
+                });
+            });
+        }
+
+        function showFinalGift() {
+            document.getElementById('overlay').style.display = 'flex';
+        }
+
+        // Vẽ sao nền cho lung linh
+        const canvas = document.getElementById('bgCanvas');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+        function initStars() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            stars = [];
+            for(let i=0; i<100; i++) stars.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, s: Math.random()*2});
+        }
+        function drawStars() {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.fillStyle = "white";
+            stars.forEach(s => {
+                ctx.beginPath(); ctx.arc(s.x, s.y, s.s, 0, Math.PI*2); ctx.fill();
+                s.y += 0.3; if(s.y > canvas.height) s.y = 0;
+            });
+            requestAnimationFrame(drawStars);
+        }
+        window.onload = () => { initStars(); drawStars(); };
+        window.onresize = initStars;
+    </script>
+</body>
+</html>
