@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Món Quà Đặc Biệt 8/3</title>
+    <title>Thiệp Chúc Mừng 8/3</title>
     <style>
         :root {
             --pink-dark: #ff1493;
             --pink-light: #ffb6c1;
+            --card-bg: #fff5f7;
         }
 
         body, html {
@@ -29,12 +30,12 @@
             pointer-events: none;
         }
 
+        /* 1. Màn hình bắt đầu */
         #start-screen {
             position: relative;
             z-index: 1000;
             text-align: center;
         }
-
         .btn-start {
             padding: 15px 35px;
             background: rgba(255, 182, 193, 0.2);
@@ -58,6 +59,7 @@
             text-shadow: 0 0 15px var(--pink-dark);
         }
 
+        /* 2. Ảnh trôi ngẫu nhiên */
         #photo-float-container {
             display: none;
             position: fixed;
@@ -66,83 +68,98 @@
             z-index: 5;
             pointer-events: none;
         }
-
         .floating-img {
             position: absolute;
-            width: 220px;
-            height: auto;
-            border-radius: 15px;
+            width: 180px;
+            border-radius: 10px;
             border: 2px solid rgba(255,255,255,0.3);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-            opacity: 0.6;
-            will-change: transform;
+            opacity: 0.5;
             animation: floatDown linear infinite;
         }
-
         @keyframes floatDown {
-            from { transform: translateY(-120vh) rotate(var(--rot)); }
-            to { transform: translateY(120vh) rotate(var(--rot)); }
+            from { transform: translateY(-110vh) rotate(var(--rot)); }
+            to { transform: translateY(110vh) rotate(var(--rot)); }
         }
 
+        /* 3. Cấu trúc Thiệp 3D */
         #main-content {
             display: none;
             position: relative;
             z-index: 1000;
-            flex-direction: column;
-            align-items: center;
+            perspective: 1500px;
         }
 
-        .btn-open-gift {
-            padding: 20px 50px;
-            background: var(--pink-dark);
-            border: none;
-            color: white;
-            font-weight: bold;
-            border-radius: 50px;
+        .card {
+            position: relative;
+            width: 300px;
+            height: 400px;
             cursor: pointer;
-            font-size: 1.6rem;
-            box-shadow: 0 0 40px var(--pink-dark);
-            animation: pulse 1.5s infinite;
+            transform-style: preserve-3d;
+            transition: transform 1s ease;
         }
 
-        @keyframes pulse {
+        /* Khi mở thiệp */
+        .card.open {
+            transform: rotateY(-130deg);
+        }
+
+        .card-front, .card-inside {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 15px;
+            box-shadow: 10px 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .card-front {
+            background: var(--pink-dark);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2;
+        }
+
+        .card-front h2 { margin: 0; font-size: 1.5rem; }
+        .card-front .heart { font-size: 4rem; color: white; margin: 20px 0; animation: beat 1s infinite; }
+
+        .card-inside {
+            background: var(--card-bg);
+            color: #333;
+            transform: rotateY(180deg);
+            padding: 30px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .card-inside h2 { color: var(--pink-dark); margin-top: 0; }
+        #typing-text { font-size: 1.1rem; line-height: 1.5; color: #444; }
+
+        @keyframes beat {
             0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+            50% { transform: scale(1.2); }
             100% { transform: scale(1); }
         }
 
-        /* Overlay & Gift Box */
-        #overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .gift-box {
-            background: #111;
-            padding: 40px;
-            border: 2px solid var(--pink-dark);
-            border-radius: 30px;
-            text-align: center;
-            max-width: 350px;
-            min-height: 200px;
-        }
-
-        /* Hiệu ứng con trỏ nhấp nháy khi đang đánh chữ */
         #typing-text::after {
             content: '|';
             animation: blink 0.7s infinite;
-            color: var(--pink-light);
         }
+        @keyframes blink { 50% { opacity: 0; } }
 
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
+        .hint {
+            position: absolute;
+            bottom: -50px;
+            width: 100%;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--pink-light);
+            animation: fadeIn 2s infinite;
         }
 
         .fade-in { animation: fadeIn 0.8s forwards; }
@@ -164,16 +181,19 @@
     <div id="photo-float-container"></div>
 
     <div id="main-content">
-        <button class="btn-open-gift" onclick="showFinalGift()">Mở Quà Cho Cậu 🎁</button>
-    </div>
-
-    <div id="overlay" onclick="closeOverlay()">
-        <div class="gift-box" onclick="event.stopPropagation()">
-            <h2 style="color: var(--pink-dark)">Happy Women's Day!</h2>
-            <p id="typing-text" style="line-height: 1.6; min-height: 3em;"></p>
-            <br>
-            <small style="opacity: 0.5; cursor: pointer;" onclick="closeOverlay()">[Bấm để đóng]</small>
+        <div class="card" id="myCard" onclick="openCard()">
+            <div class="card-front">
+                <h2>Gửi Cậu...</h2>
+                <div class="heart">❤️</div>
+                <p>Mở thiệp ra đi!</p>
+            </div>
+            <div class="card-inside">
+                <h2>Happy 8/3!</h2>
+                <p id="typing-text"></p>
+                <p style="margin-top: 20px; font-size: 0.8rem; color: #888;">(Bấm để đóng thiệp)</p>
+            </div>
         </div>
+        <div class="hint" id="card-hint">Chạm vào thiệp để mở</div>
     </div>
 
     <script>
@@ -187,18 +207,17 @@
 
         const fullMessage = "Tớ hy vọng món quà nhỏ này làm cậu mỉm cười. Chúc cậu một ngày 8/3 thật ý nghĩa, hạnh phúc và luôn là bông hoa rạng rỡ nhất nhé! ❤️";
 
+        // Thay link ảnh của bạn vào đây
         const myImages = [
-            'https://picsum.photos/400/600?random=11',
-            'https://picsum.photos/400/600?random=12',
-            'https://picsum.photos/400/600?random=13',
-            'https://picsum.photos/400/600?random=14',
-            'https://picsum.photos/400/600?random=15',
-            'https://picsum.photos/400/600?random=16',
-            'https://picsum.photos/400/600?random=17',
-            'https://picsum.photos/400/600?random=18'
+            'https://picsum.photos/400/600?random=1',
+            'https://picsum.photos/400/600?random=2',
+            'https://picsum.photos/400/600?random=3',
+            'https://picsum.photos/400/600?random=4',
+            'https://picsum.photos/400/600?random=5'
         ];
 
         let currentPhrase = 0;
+        let isTyping = false;
 
         function startExperience() {
             document.getElementById('start-screen').style.display = 'none';
@@ -233,56 +252,50 @@
 
         function createFloatingImages() {
             const container = document.getElementById('photo-float-container');
-            const totalImages = 25; 
-
-            for (let i = 0; i < totalImages; i++) {
+            for (let i = 0; i < 20; i++) {
                 const img = document.createElement('img');
                 img.src = myImages[i % myImages.length];
                 img.className = 'floating-img';
-                
-                const leftPos = Math.random() * 90;
-                const duration = 15 + Math.random() * 20;
-                const delay = Math.random() * -40;
-                const rotation = (Math.random() - 0.5) * 30;
-                const zIndex = Math.floor(Math.random() * 10);
-                const scale = 0.8 + Math.random() * 0.5;
-
-                img.style.left = `${leftPos}%`;
-                img.style.animationDuration = `${duration}s`;
-                img.style.animationDelay = `${delay}s`;
-                img.style.zIndex = zIndex;
-                img.style.setProperty('--rot', `${rotation}deg`);
-                img.style.width = `${200 * scale}px`;
-
+                img.style.left = Math.random() * 90 + '%';
+                img.style.animationDuration = (15 + Math.random() * 20) + 's';
+                img.style.animationDelay = (Math.random() * -30) + 's';
+                img.style.zIndex = Math.floor(Math.random() * 5);
+                img.style.setProperty('--rot', (Math.random() - 0.5) * 40 + 'deg');
                 container.appendChild(img);
             }
         }
 
-        // HÀM ĐÁNH CHỮ
-        function typeWriter(text, i, fnCallback) {
-            if (i < text.length) {
-                document.getElementById("typing-text").innerHTML = text.substring(0, i+1);
-                setTimeout(function() {
-                    typeWriter(text, i + 1, fnCallback)
-                }, 70); // Tốc độ đánh chữ (ms)
-            } else if (typeof fnCallback == 'function') {
-                setTimeout(fnCallback, 700);
+        function openCard() {
+            const card = document.getElementById('myCard');
+            const hint = document.getElementById('card-hint');
+            
+            if (!card.classList.contains('open')) {
+                card.classList.add('open');
+                hint.style.display = 'none';
+                if (!isTyping) {
+                    isTyping = true;
+                    setTimeout(() => {
+                        typeWriter(fullMessage, 0);
+                    }, 800);
+                }
+            } else {
+                card.classList.remove('open');
+                // Nếu muốn mỗi lần mở là đánh chữ lại thì reset ở đây
+                // isTyping = false;
+                // document.getElementById("typing-text").innerHTML = "";
             }
         }
 
-        function showFinalGift() {
-            document.getElementById('overlay').style.display = 'flex';
-            document.getElementById("typing-text").innerHTML = ""; // Xóa text cũ
-            setTimeout(() => {
-                typeWriter(fullMessage, 0);
-            }, 500);
+        function typeWriter(text, i) {
+            if (i < text.length) {
+                document.getElementById("typing-text").innerHTML = text.substring(0, i + 1);
+                setTimeout(function() {
+                    typeWriter(text, i + 1)
+                }, 70);
+            }
         }
 
-        function closeOverlay() {
-            document.getElementById('overlay').style.display = 'none';
-        }
-
-        // Sao rơi nền
+        // Sao nền
         const canvas = document.getElementById('bgCanvas');
         const ctx = canvas.getContext('2d');
         let stars = [];
