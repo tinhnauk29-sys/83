@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gửi Bạn Nữ Xinh Đẹp</title>
+    <title>Món Quà Đặc Biệt 8/3</title>
     <style>
         :root {
-            --pink-light: #ffb6c1;
             --pink-dark: #ff1493;
-            --glass: rgba(255, 255, 255, 0.1);
+            --pink-light: #ffb6c1;
         }
 
         body, html {
@@ -31,94 +30,101 @@
             pointer-events: none;
         }
 
-        /* Màn hình bắt đầu */
+        /* 1. Màn hình bắt đầu */
         #start-screen {
             position: relative;
             z-index: 100;
             text-align: center;
         }
-
         .btn-start {
             padding: 15px 30px;
-            background: var(--glass);
+            background: rgba(255, 255, 255, 0.1);
             border: 2px solid var(--pink-light);
             color: white;
             border-radius: 10px;
             cursor: pointer;
             backdrop-filter: blur(5px);
             font-size: 1.1rem;
-            transition: 0.3s;
         }
 
-        .btn-start:hover {
-            background: var(--pink-dark);
-            box-shadow: 0 0 20px var(--pink-dark);
-        }
-
-        /* Vùng chạy chữ */
+        /* 2. Chuỗi chữ biến đổi */
         #text-sequence {
             display: none;
             position: relative;
             z-index: 50;
             font-size: 1.8rem;
-            font-weight: bold;
             text-align: center;
             max-width: 80%;
             color: var(--pink-light);
             text-shadow: 0 0 10px var(--pink-dark);
         }
 
-        /* Màn hình chính (Ảnh + Nút mở quà) */
+        /* 3. HIỆU ỨNG ẢNH CHẠY LƯỚT XUỐNG (Background Slider) */
+        #photo-slider-bg {
+            display: none; /* Chỉ hiện sau khi chạy chữ xong */
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 5;
+            display: flex;
+            justify-content: space-around;
+            opacity: 0.4; /* Làm mờ để nổi bật nút bấm */
+        }
+
+        .photo-column {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            animation: scrollDown 20s linear infinite;
+        }
+
+        /* Cột 2 chạy ngược lại hoặc tốc độ khác cho sinh động */
+        .column-reverse {
+            animation: scrollDown 25s linear infinite reverse;
+        }
+
+        @keyframes scrollDown {
+            0% { transform: translateY(-50%); }
+            100% { transform: translateY(0%); }
+        }
+
+        .slider-img {
+            width: 120px;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 2px solid white;
+        }
+
+        /* 4. Nút Mở Quà nằm trên cùng */
         #main-content {
             display: none;
+            position: relative;
+            z-index: 20;
             flex-direction: column;
             align-items: center;
-            z-index: 20;
-            width: 100%;
-        }
-
-        .photo-container {
-            position: relative;
-            width: 100%;
-            height: 300px;
-            margin-bottom: 30px;
-        }
-
-        .floating-img {
-            position: absolute;
-            width: 90px; height: 120px;
-            border: 3px solid white;
-            border-radius: 8px;
-            object-fit: cover;
-            animation: float 5s infinite ease-in-out;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translate(0,0) rotate(-5deg); }
-            50% { transform: translate(10px, -20px) rotate(5deg); }
         }
 
         .btn-open-gift {
-            padding: 15px 40px;
+            padding: 20px 50px;
             background: var(--pink-dark);
             border: none;
             color: white;
             font-weight: bold;
             border-radius: 50px;
             cursor: pointer;
-            font-size: 1.2rem;
-            box-shadow: 0 0 15px var(--pink-dark);
+            font-size: 1.5rem;
+            box-shadow: 0 0 30px var(--pink-dark);
             animation: pulse 1.5s infinite;
         }
 
         @keyframes pulse {
             0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+            50% { transform: scale(1.1); }
             100% { transform: scale(1); }
         }
 
-        /* Hộp quà (Overlay) */
+        /* 5. Lời chúc cuối */
         #overlay {
             display: none;
             position: fixed;
@@ -129,7 +135,6 @@
             justify-content: center;
             align-items: center;
         }
-
         .gift-box {
             background: #1a1a1a;
             padding: 30px;
@@ -139,7 +144,6 @@
             max-width: 300px;
         }
 
-        /* Hiệu ứng mờ dần */
         .fade-in { animation: fadeIn 1s forwards; }
         .fade-out { animation: fadeOut 1s forwards; }
         @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
@@ -151,31 +155,46 @@
     <canvas id="bgCanvas"></canvas>
 
     <div id="start-screen">
-        <button class="btn-start" onclick="startExperience()">Bấm vào đây để chạy ✨</button>
+        <button class="btn-start" onclick="startExperience()">Bấm vào đây nè ✨</button>
     </div>
 
     <div id="text-sequence"></div>
 
+    <div id="photo-slider-bg">
+        <div class="photo-column" id="col1"></div>
+        <div class="photo-column column-reverse" id="col2"></div>
+        <div class="photo-column" id="col3"></div>
+    </div>
+
     <div id="main-content">
-        <div class="photo-container" id="photoSpace"></div>
-        <button class="btn-open-gift" onclick="showFinalGift()">Mở Quà 🎁</button>
+        <button class="btn-open-gift" onclick="showFinalGift()">Mở Quà Cho Cậu 🎁</button>
     </div>
 
     <div id="overlay" onclick="this.style.display='none'">
         <div class="gift-box">
-            <h2 style="color: var(--pink-dark)">Món Quà Siêu Cấp!</h2>
-            <p>Chúc mấy bạn nữ tổ 2 8386 ❤️</p>
+            <h2 style="color: var(--pink-dark)">Happy Women's Day!</h2>
+            <p>Tớ hy vọng món quà nhỏ này làm cậu mỉm cười. Chúc cậu một ngày 8/3 thật ý nghĩa và trọn vẹn nhé! ❤️</p>
             <small>(Bấm để đóng)</small>
         </div>
     </div>
 
     <script>
         const phrases = [
-            "Chào các bạn nữ tổ 2 trước màn hình...",
+            "Chào bạn nữ trước màn hình...",
             "Nhân ngày Quốc tế Phụ nữ 8/3",
             "Tớ chúc cậu luôn xinh đẹp, rạng rỡ",
             "Và luôn hạnh phúc với những gì mình chọn!",
-            "Đây là một chút bất ngờ dành cho cậu..."
+            "Đây là một chút kỷ niệm dành cho cậu..."
+        ];
+
+        // LINK ẢNH CỦA BẠN (Thay vào đây nhé)
+        const myImages = [
+            'https://picsum.photos/200/300?random=1',
+            'https://picsum.photos/200/300?random=2',
+            'https://picsum.photos/200/300?random=3',
+            'https://picsum.photos/200/300?random=4',
+            'https://picsum.photos/200/300?random=5',
+            'https://picsum.photos/200/300?random=6'
         ];
 
         let currentPhrase = 0;
@@ -209,28 +228,23 @@
         }
 
         function showMainContent() {
+            document.getElementById('photo-slider-bg').style.display = 'flex';
             document.getElementById('main-content').style.display = 'flex';
-            createPhotos();
+            populateSlider();
         }
 
-        function createPhotos() {
-            const space = document.getElementById('photoSpace');
-            // THAY LINK ẢNH CỦA BẠN VÀO ĐÂY
-            const images = [
-                'https://picsum.photos/200/300?random=1',
-                'https://picsum.photos/200/300?random=2',
-                'https://picsum.photos/200/300?random=3',
-                'https://picsum.photos/200/300?random=4'
-            ];
-
-            images.forEach((src, i) => {
-                const img = document.createElement('img');
-                img.src = src;
-                img.className = 'floating-img';
-                img.style.left = (10 + Math.random() * 70) + '%';
-                img.style.top = (Math.random() * 50) + '%';
-                img.style.animationDelay = (i * 0.5) + 's';
-                space.appendChild(img);
+        function populateSlider() {
+            const columns = ['col1', 'col2', 'col3'];
+            columns.forEach(colId => {
+                const col = document.getElementById(colId);
+                // Nhân đôi mảng ảnh để tạo hiệu ứng lặp vô tận (Infinity scroll)
+                const doubleImages = [...myImages, ...myImages, ...myImages];
+                doubleImages.forEach(src => {
+                    const img = document.createElement('img');
+                    img.src = src;
+                    img.className = 'slider-img';
+                    col.appendChild(img);
+                });
             });
         }
 
@@ -238,33 +252,25 @@
             document.getElementById('overlay').style.display = 'flex';
         }
 
-        // Vẽ nền sao
+        // Vẽ sao nền cho lung linh
         const canvas = document.getElementById('bgCanvas');
         const ctx = canvas.getContext('2d');
         let stars = [];
-
         function initStars() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
             stars = [];
-            for(let i=0; i<100; i++) {
-                stars.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, s: Math.random()*2});
-            }
+            for(let i=0; i<100; i++) stars.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, s: Math.random()*2});
         }
-
         function drawStars() {
             ctx.clearRect(0,0,canvas.width,canvas.height);
             ctx.fillStyle = "white";
             stars.forEach(s => {
-                ctx.beginPath();
-                ctx.arc(s.x, s.y, s.s, 0, Math.PI*2);
-                ctx.fill();
-                s.y += 0.3;
-                if(s.y > canvas.height) s.y = 0;
+                ctx.beginPath(); ctx.arc(s.x, s.y, s.s, 0, Math.PI*2); ctx.fill();
+                s.y += 0.3; if(s.y > canvas.height) s.y = 0;
             });
             requestAnimationFrame(drawStars);
         }
-
         window.onload = () => { initStars(); drawStars(); };
         window.onresize = initStars;
     </script>
