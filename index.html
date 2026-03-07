@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thiệp Chúc Mừng 8/3</title>
+    <title>Gửi Cậu 8/3 ✨</title>
     <style>
         :root {
             --pink-dark: #ff1493;
             --pink-light: #ffb6c1;
-            --card-bg: #fff5f7;
+            --card-bg: #fffafa;
         }
 
         body, html {
@@ -20,7 +20,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            color: white;
         }
 
         #bgCanvas {
@@ -52,11 +51,11 @@
             display: none;
             position: relative;
             z-index: 500;
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             text-align: center;
             max-width: 80%;
             color: var(--pink-light);
-            text-shadow: 0 0 15px var(--pink-dark);
+            text-shadow: 0 0 10px var(--pink-dark);
         }
 
         /* 2. Ảnh trôi ngẫu nhiên */
@@ -70,10 +69,10 @@
         }
         .floating-img {
             position: absolute;
-            width: 180px;
+            width: 150px;
             border-radius: 10px;
             border: 2px solid rgba(255,255,255,0.3);
-            opacity: 0.5;
+            opacity: 0.4;
             animation: floatDown linear infinite;
         }
         @keyframes floatDown {
@@ -81,7 +80,7 @@
             to { transform: translateY(110vh) rotate(var(--rot)); }
         }
 
-        /* 3. Cấu trúc Thiệp 3D */
+        /* 3. HIỆU ỨNG THIỆP/QUYỂN VỞ */
         #main-content {
             display: none;
             position: relative;
@@ -89,45 +88,41 @@
             perspective: 1500px;
         }
 
-        .card {
+        .book {
             position: relative;
-            width: 300px;
-            height: 400px;
-            cursor: pointer;
+            width: 280px;
+            height: 380px;
             transform-style: preserve-3d;
-            transition: transform 1s ease;
+            transition: transform 1s cubic-bezier(0.15, 0.45, 0.3, 1);
         }
 
-        /* Khi mở thiệp */
-        .card.open {
-            transform: rotateY(-130deg);
-        }
-
-        .card-front, .card-inside {
+        /* Tờ bìa (Mặt trước) */
+        .cover {
             position: absolute;
             width: 100%;
             height: 100%;
-            backface-visibility: hidden;
-            border-radius: 15px;
-            box-shadow: 10px 10px 30px rgba(0,0,0,0.5);
-        }
-
-        .card-front {
             background: var(--pink-dark);
+            color: white;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 2;
+            border-radius: 0 15px 15px 0; /* Bo góc bên phải */
+            box-shadow: 5px 5px 20px rgba(0,0,0,0.5);
+            transform-origin: left; /* Quay quanh trục bên trái */
+            transition: transform 1s ease;
+            z-index: 10;
+            cursor: pointer;
+            border-left: 3px solid rgba(0,0,0,0.2); /* Tạo gáy vở */
         }
 
-        .card-front h2 { margin: 0; font-size: 1.5rem; }
-        .card-front .heart { font-size: 4rem; color: white; margin: 20px 0; animation: beat 1s infinite; }
-
-        .card-inside {
+        /* Trang bên trong */
+        .page-inside {
+            position: absolute;
+            width: 100%;
+            height: 100%;
             background: var(--card-bg);
-            color: #333;
-            transform: rotateY(180deg);
+            border-radius: 0 15px 15px 0;
             padding: 30px;
             box-sizing: border-box;
             display: flex;
@@ -135,15 +130,24 @@
             justify-content: center;
             align-items: center;
             text-align: center;
+            z-index: 5;
+            color: #333;
+            box-shadow: inset 5px 0 10px rgba(0,0,0,0.1);
         }
 
-        .card-inside h2 { color: var(--pink-dark); margin-top: 0; }
-        #typing-text { font-size: 1.1rem; line-height: 1.5; color: #444; }
+        /* Trạng thái khi mở vở */
+        .book.open .cover {
+            transform: rotateY(-160deg);
+        }
+
+        .cover h2 { margin: 10px 0; font-size: 1.4rem; }
+        .heart-icon { font-size: 4rem; animation: beat 1s infinite; }
+
+        #typing-text { font-size: 1.1rem; line-height: 1.6; color: #444; }
 
         @keyframes beat {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
         }
 
         #typing-text::after {
@@ -154,12 +158,11 @@
 
         .hint {
             position: absolute;
-            bottom: -50px;
+            bottom: -60px;
             width: 100%;
             text-align: center;
-            font-size: 0.9rem;
             color: var(--pink-light);
-            animation: fadeIn 2s infinite;
+            font-size: 0.9rem;
         }
 
         .fade-in { animation: fadeIn 0.8s forwards; }
@@ -173,7 +176,7 @@
     <canvas id="bgCanvas"></canvas>
 
     <div id="start-screen">
-        <button class="btn-start" onclick="startExperience()">Bấm vào đây nè ✨</button>
+        <button class="btn-start" onclick="startExperience()">Mở quà ngay 🎀</button>
     </div>
 
     <div id="text-sequence"></div>
@@ -181,43 +184,41 @@
     <div id="photo-float-container"></div>
 
     <div id="main-content">
-        <div class="card" id="myCard" onclick="openCard()">
-            <div class="card-front">
+        <div class="book" id="myBook">
+            <div class="cover" onclick="openBook()">
+                <div class="heart-icon">❤️</div>
                 <h2>Gửi Cậu...</h2>
-                <div class="heart">❤️</div>
-                <p>Mở thiệp ra đi!</p>
+                <small>Chạm để mở quyển vở nhỏ</small>
             </div>
-            <div class="card-inside">
-                <h2>Happy 8/3!</h2>
-                <p id="typing-text"></p>
-                <p style="margin-top: 20px; font-size: 0.8rem; color: #888;">(Bấm để đóng thiệp)</p>
+            <div class="page-inside" onclick="openBook()">
+                <h2 style="color: var(--pink-dark); margin-top: 0;">Happy 8/3!</h2>
+                <div id="typing-text"></div>
             </div>
         </div>
-        <div class="hint" id="card-hint">Chạm vào thiệp để mở</div>
+        <div class="hint">Bấm vào bìa để lật trang nhé</div>
     </div>
 
     <script>
         const phrases = [
-            "Chào bạn nữ trước màn hình...",
+            "Chào bạn nữ xinh xắn...",
             "Nhân ngày Quốc tế Phụ nữ 8/3",
-            "Tớ chúc cậu luôn xinh đẹp, rạng rỡ",
-            "Và luôn hạnh phúc với những gì mình chọn!",
-            "Đây là một chút kỷ niệm dành cho cậu..."
+            "Tớ có một điều bất ngờ nhỏ...",
+            "Dành riêng cho cậu thôi đấy!",
+            "Sẵn sàng chưa nào? ✨"
         ];
 
-        const fullMessage = "Tớ hy vọng món quà nhỏ này làm cậu mỉm cười. Chúc cậu một ngày 8/3 thật ý nghĩa, hạnh phúc và luôn là bông hoa rạng rỡ nhất nhé! ❤️";
+        const fullMessage = "Chúc cậu một ngày 8/3 thật hạnh phúc, luôn rạng rỡ như ánh mặt trời và gặp thật nhiều may mắn trong cuộc sống nhé! Cậu xứng đáng với những điều tốt đẹp nhất. ❤️";
 
-        // Thay link ảnh của bạn vào đây
         const myImages = [
-            'https://picsum.photos/400/600?random=1',
-            'https://picsum.photos/400/600?random=2',
-            'https://picsum.photos/400/600?random=3',
-            'https://picsum.photos/400/600?random=4',
-            'https://picsum.photos/400/600?random=5'
+            'https://picsum.photos/300/400?random=1',
+            'https://picsum.photos/300/400?random=2',
+            'https://picsum.photos/300/400?random=3',
+            'https://picsum.photos/300/400?random=4',
+            'https://picsum.photos/300/400?random=5'
         ];
 
         let currentPhrase = 0;
-        let isTyping = false;
+        let typingStarted = false;
 
         function startExperience() {
             document.getElementById('start-screen').style.display = 'none';
@@ -256,42 +257,30 @@
                 const img = document.createElement('img');
                 img.src = myImages[i % myImages.length];
                 img.className = 'floating-img';
-                img.style.left = Math.random() * 90 + '%';
-                img.style.animationDuration = (15 + Math.random() * 20) + 's';
+                img.style.left = Math.random() * 85 + '%';
+                img.style.animationDuration = (15 + Math.random() * 15) + 's';
                 img.style.animationDelay = (Math.random() * -30) + 's';
-                img.style.zIndex = Math.floor(Math.random() * 5);
                 img.style.setProperty('--rot', (Math.random() - 0.5) * 40 + 'deg');
                 container.appendChild(img);
             }
         }
 
-        function openCard() {
-            const card = document.getElementById('myCard');
-            const hint = document.getElementById('card-hint');
+        function openBook() {
+            const book = document.getElementById('myBook');
+            book.classList.toggle('open');
             
-            if (!card.classList.contains('open')) {
-                card.classList.add('open');
-                hint.style.display = 'none';
-                if (!isTyping) {
-                    isTyping = true;
-                    setTimeout(() => {
-                        typeWriter(fullMessage, 0);
-                    }, 800);
-                }
-            } else {
-                card.classList.remove('open');
-                // Nếu muốn mỗi lần mở là đánh chữ lại thì reset ở đây
-                // isTyping = false;
-                // document.getElementById("typing-text").innerHTML = "";
+            if (book.classList.contains('open') && !typingStarted) {
+                typingStarted = true;
+                setTimeout(() => {
+                    typeWriter(fullMessage, 0);
+                }, 800);
             }
         }
 
         function typeWriter(text, i) {
             if (i < text.length) {
                 document.getElementById("typing-text").innerHTML = text.substring(0, i + 1);
-                setTimeout(function() {
-                    typeWriter(text, i + 1)
-                }, 70);
+                setTimeout(() => typeWriter(text, i + 1), 60);
             }
         }
 
