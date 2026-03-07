@@ -3,143 +3,243 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Món Quà Nhỏ - 8/3</title>
+    <title>Gửi Bạn Nữ Xinh Đẹp</title>
     <style>
         :root {
-            --pink-main: #ff69b4;
-            --pink-glow: #ff1493;
+            --pink-light: #ffb6c1;
+            --pink-dark: #ff1493;
+            --glass: rgba(255, 255, 255, 0.1);
         }
 
         body, html {
             margin: 0; padding: 0;
             width: 100%; height: 100%;
+            background: #000;
+            font-family: 'Arial', sans-serif;
             overflow: hidden;
-            background-color: #0a0a0a;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             color: white;
         }
 
-        /* Lớp nền sao rơi - Quan trọng: pointer-events: none để không chặn click */
-        #starCanvas {
+        /* Nền sao rơi */
+        #bgCanvas {
             position: fixed;
             top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: 1; 
-            pointer-events: none; 
+            z-index: 1;
+            pointer-events: none;
         }
 
-        /* Container chính */
-        .main-content {
+        /* Màn hình bắt đầu */
+        #start-screen {
             position: relative;
-            z-index: 10; /* Luôn nằm trên cùng */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
+            z-index: 100;
             text-align: center;
         }
 
-        h1 {
-            font-size: 2rem;
-            color: var(--pink-main);
-            text-shadow: 0 0 15px var(--pink-glow);
-            margin-bottom: 10px;
+        .btn-start {
+            padding: 15px 30px;
+            background: var(--glass);
+            border: 2px solid var(--pink-light);
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+            font-size: 1.1rem;
+            transition: 0.3s;
         }
 
-        /* Gallery ảnh mini */
-        .photo-space {
+        .btn-start:hover {
+            background: var(--pink-dark);
+            box-shadow: 0 0 20px var(--pink-dark);
+        }
+
+        /* Vùng chạy chữ */
+        #text-sequence {
+            display: none;
+            position: relative;
+            z-index: 50;
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-align: center;
+            max-width: 80%;
+            color: var(--pink-light);
+            text-shadow: 0 0 10px var(--pink-dark);
+        }
+
+        /* Màn hình chính (Ảnh + Nút mở quà) */
+        #main-content {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            z-index: 20;
+            width: 100%;
+        }
+
+        .photo-container {
             position: relative;
             width: 100%;
-            height: 250px;
-            margin: 20px 0;
+            height: 300px;
+            margin-bottom: 30px;
         }
 
         .floating-img {
             position: absolute;
-            width: 70px; height: 90px;
-            border: 2px solid white;
-            border-radius: 5px;
+            width: 90px; height: 120px;
+            border: 3px solid white;
+            border-radius: 8px;
             object-fit: cover;
-            box-shadow: 0 5px 15px rgba(255,105,180,0.4);
-            animation: floatAnim 4s infinite ease-in-out;
+            animation: float 5s infinite ease-in-out;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
         }
 
-        @keyframes floatAnim {
-            0%, 100% { transform: translateY(0) rotate(-5deg); }
-            50% { transform: translateY(-20px) rotate(5deg); }
+        @keyframes float {
+            0%, 100% { transform: translate(0,0) rotate(-5deg); }
+            50% { transform: translate(10px, -20px) rotate(5deg); }
         }
 
-        /* Nút bấm xịn xò */
-        .btn-gift {
-            background: none;
-            border: 2px solid var(--pink-main);
+        .btn-open-gift {
+            padding: 15px 40px;
+            background: var(--pink-dark);
+            border: none;
             color: white;
-            padding: 15px 35px;
-            font-size: 1.2rem;
+            font-weight: bold;
             border-radius: 50px;
             cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 0 10px var(--pink-glow);
-            z-index: 100; /* Ưu tiên cực cao */
+            font-size: 1.2rem;
+            box-shadow: 0 0 15px var(--pink-dark);
+            animation: pulse 1.5s infinite;
         }
 
-        .btn-gift:hover {
-            background: var(--pink-main);
-            transform: scale(1.1);
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
 
-        /* Hộp quà xuất hiện */
+        /* Hộp quà (Overlay) */
         #overlay {
             display: none;
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
-            z-index: 999;
+            background: rgba(0,0,0,0.9);
+            z-index: 200;
             justify-content: center;
             align-items: center;
-            flex-direction: column;
         }
 
-        .message-card {
+        .gift-box {
             background: #1a1a1a;
             padding: 30px;
-            border: 2px solid var(--pink-main);
+            border: 2px solid var(--pink-dark);
             border-radius: 20px;
-            max-width: 300px;
             text-align: center;
-            animation: popUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            max-width: 300px;
         }
 
-        @keyframes popUp {
-            from { transform: scale(0); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
+        /* Hiệu ứng mờ dần */
+        .fade-in { animation: fadeIn 1s forwards; }
+        .fade-out { animation: fadeOut 1s forwards; }
+        @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
+        @keyframes fadeOut { from {opacity: 1;} to {opacity: 0;} }
     </style>
 </head>
 <body>
 
-    <canvas id="starCanvas"></canvas>
+    <canvas id="bgCanvas"></canvas>
 
-    <div class="main-content">
-        <h1>Chào bạn xinh đẹp! ✨</h1>
-        <div class="photo-space" id="photoSpace">
-            </div>
-        <button class="btn-gift" onclick="openGift()">Mở quà 🎁</button>
+    <div id="start-screen">
+        <button class="btn-start" onclick="startExperience()">Bấm vào đây để chạy ✨</button>
     </div>
 
-    <div id="overlay" onclick="closeGift()">
-        <div class="message-card">
-            <h2 style="color: var(--pink-main)">Happy Women's Day!</h2>
-            <p>Chúc bạn ở trước màn hình, hạnh phúc và gặp thật nhiều may mắn trong cuộc sống nhé! ❤️</p>
-            <p style="font-size: 0.8rem; color: #888;">(Bấm bất kỳ đâu để đóng)</p>
+    <div id="text-sequence"></div>
+
+    <div id="main-content">
+        <div class="photo-container" id="photoSpace"></div>
+        <button class="btn-open-gift" onclick="showFinalGift()">Mở Quà 🎁</button>
+    </div>
+
+    <div id="overlay" onclick="this.style.display='none'">
+        <div class="gift-box">
+            <h2 style="color: var(--pink-dark)">Món Quà Siêu Cấp!</h2>
+            <p>Tớ đã chuẩn bị rất lâu để nói rằng: Cậu là điều tuyệt vời nhất! Chúc mừng ngày 8/3 nhé! ❤️</p>
+            <small>(Bấm để đóng)</small>
         </div>
     </div>
 
     <script>
-        // Hiệu ứng ngôi sao
-        const canvas = document.getElementById('starCanvas');
+        const phrases = [
+            "Chào bạn nữ trước màn hình...",
+            "Nhân ngày Quốc tế Phụ nữ 8/3",
+            "Tớ chúc cậu luôn xinh đẹp, rạng rỡ",
+            "Và luôn hạnh phúc với những gì mình chọn!",
+            "Đây là một chút bất ngờ dành cho cậu..."
+        ];
+
+        let currentPhrase = 0;
+
+        function startExperience() {
+            document.getElementById('start-screen').style.display = 'none';
+            const textEl = document.getElementById('text-sequence');
+            textEl.style.display = 'block';
+            runTextSequence();
+        }
+
+        function runTextSequence() {
+            const textEl = document.getElementById('text-sequence');
+            if (currentPhrase < phrases.length) {
+                textEl.innerText = phrases[currentPhrase];
+                textEl.classList.remove('fade-out');
+                textEl.classList.add('fade-in');
+
+                setTimeout(() => {
+                    textEl.classList.remove('fade-in');
+                    textEl.classList.add('fade-out');
+                    setTimeout(() => {
+                        currentPhrase++;
+                        runTextSequence();
+                    }, 1000);
+                }, 2500);
+            } else {
+                textEl.style.display = 'none';
+                showMainContent();
+            }
+        }
+
+        function showMainContent() {
+            document.getElementById('main-content').style.display = 'flex';
+            createPhotos();
+        }
+
+        function createPhotos() {
+            const space = document.getElementById('photoSpace');
+            // THAY LINK ẢNH CỦA BẠN VÀO ĐÂY
+            const images = [
+                'https://picsum.photos/200/300?random=1',
+                'https://picsum.photos/200/300?random=2',
+                'https://picsum.photos/200/300?random=3',
+                'https://picsum.photos/200/300?random=4'
+            ];
+
+            images.forEach((src, i) => {
+                const img = document.createElement('img');
+                img.src = src;
+                img.className = 'floating-img';
+                img.style.left = (10 + Math.random() * 70) + '%';
+                img.style.top = (Math.random() * 50) + '%';
+                img.style.animationDelay = (i * 0.5) + 's';
+                space.appendChild(img);
+            });
+        }
+
+        function showFinalGift() {
+            document.getElementById('overlay').style.display = 'flex';
+        }
+
+        // Vẽ nền sao
+        const canvas = document.getElementById('bgCanvas');
         const ctx = canvas.getContext('2d');
         let stars = [];
 
@@ -147,66 +247,25 @@
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
             stars = [];
-            for(let i=0; i<150; i++) {
-                stars.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    size: Math.random() * 2,
-                    speed: Math.random() * 0.5 + 0.2
-                });
+            for(let i=0; i<100; i++) {
+                stars.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, s: Math.random()*2});
             }
         }
 
-        function draw() {
-            ctx.clearRect(0,0,canvas.width, canvas.height);
+        function drawStars() {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
             ctx.fillStyle = "white";
             stars.forEach(s => {
                 ctx.beginPath();
-                ctx.arc(s.x, s.y, s.size, 0, Math.PI*2);
+                ctx.arc(s.x, s.y, s.s, 0, Math.PI*2);
                 ctx.fill();
-                s.y += s.speed;
+                s.y += 0.3;
                 if(s.y > canvas.height) s.y = 0;
             });
-            requestAnimationFrame(draw);
+            requestAnimationFrame(drawStars);
         }
 
-        // Tạo ảnh bay ngẫu nhiên
-        function createPhotos() {
-            const container = document.getElementById('photoSpace');
-            // Thay link ảnh thật của bạn vào đây
-            const links = [
-                'https://picsum.photos/200/300?random=1',
-                'https://picsum.photos/200/300?random=2',
-                'https://picsum.photos/200/300?random=3'
-            ];
-
-            links.forEach((link, index) => {
-                const img = document.createElement('img');
-                img.src = link;
-                img.className = 'floating-img';
-                img.style.left = (20 + index * 25) + '%';
-                img.style.top = (Math.random() * 30) + '%';
-                img.style.animationDelay = index + 's';
-                container.appendChild(img);
-            });
-        }
-
-        // Logic mở quà
-        function openGift() {
-            document.getElementById('overlay').style.display = 'flex';
-            console.log("Đã mở quà thành công!");
-        }
-
-        function closeGift() {
-            document.getElementById('overlay').style.display = 'none';
-        }
-
-        window.onload = () => {
-            initStars();
-            draw();
-            createPhotos();
-        };
-
+        window.onload = () => { initStars(); drawStars(); };
         window.onresize = initStars;
     </script>
 </body>
