@@ -29,12 +29,12 @@
             pointer-events: none;
         }
 
-        /* Màn hình bắt đầu */
         #start-screen {
             position: relative;
-            z-index: 1000; /* Đảm bảo luôn nằm trên cùng để bấm được */
+            z-index: 1000;
             text-align: center;
         }
+
         .btn-start {
             padding: 15px 35px;
             background: rgba(255, 182, 193, 0.2);
@@ -44,15 +44,9 @@
             cursor: pointer;
             backdrop-filter: blur(10px);
             font-size: 1.2rem;
-            transition: all 0.3s;
-            box-shadow: 0 0 15px rgba(255, 20, 147, 0.4);
-        }
-        .btn-start:hover {
-            background: var(--pink-dark);
-            transform: scale(1.05);
+            transition: 0.3s;
         }
 
-        /* Chuỗi chữ */
         #text-sequence {
             display: none;
             position: relative;
@@ -64,41 +58,36 @@
             text-shadow: 0 0 15px var(--pink-dark);
         }
 
-        /* Hiệu ứng ảnh nền ngẫu nhiên */
-        #photo-slider-bg {
-            display: none; /* Sẽ chuyển thành flex bằng JS */
+        /* --- HIỆU ỨNG ẢNH NGẪU NHIÊN --- */
+        #photo-float-container {
+            display: none;
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
             z-index: 5;
-            overflow: hidden;
-            justify-content: center;
-            gap: 20px;
-            opacity: 0.4;
+            pointer-events: none; /* Để không chặn click vào nút bấm */
         }
 
-        .photo-column {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            will-change: transform;
-        }
-
-        @keyframes scrollDown {
-            0% { transform: translateY(-50%); }
-            100% { transform: translateY(0%); }
-        }
-
-        .slider-img {
-            width: 200px; /* Ảnh to hơn */
-            height: 280px;
-            object-fit: cover;
+        .floating-img {
+            position: absolute;
+            width: 220px; /* Ảnh to */
+            height: auto;
             border-radius: 15px;
-            border: 1px solid rgba(255,255,255,0.2);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            border: 2px solid rgba(255,255,255,0.3);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            opacity: 0.6;
+            will-change: transform;
+            /* Hiệu ứng trôi xuống */
+            animation: floatDown linear infinite;
         }
 
-        /* Nút Mở Quà */
+        @keyframes floatDown {
+            from { transform: translateY(-120vh) rotate(var(--rot)); }
+            to { transform: translateY(120vh) rotate(var(--rot)); }
+        }
+
+        /* ------------------------------ */
+
         #main-content {
             display: none;
             position: relative;
@@ -126,18 +115,17 @@
             100% { transform: scale(1); }
         }
 
-        /* Overlay cuối */
         #overlay {
             display: none;
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9);
+            background: rgba(0,0,0,0.95);
             z-index: 2000;
             justify-content: center;
             align-items: center;
-            cursor: pointer;
         }
+
         .gift-box {
             background: #111;
             padding: 40px;
@@ -145,12 +133,11 @@
             border-radius: 30px;
             text-align: center;
             max-width: 350px;
-            box-shadow: 0 0 50px rgba(255, 20, 147, 0.3);
         }
 
         .fade-in { animation: fadeIn 0.8s forwards; }
         .fade-out { animation: fadeOut 0.8s forwards; }
-        @keyframes fadeIn { from {opacity: 0; transform: scale(0.9);} to {opacity: 1; transform: scale(1);} }
+        @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
         @keyframes fadeOut { from {opacity: 1;} to {opacity: 0;} }
     </style>
 </head>
@@ -164,7 +151,7 @@
 
     <div id="text-sequence"></div>
 
-    <div id="photo-slider-bg"></div>
+    <div id="photo-float-container"></div>
 
     <div id="main-content">
         <button class="btn-open-gift" onclick="showFinalGift()">Mở Quà Cho Cậu 🎁</button>
@@ -172,9 +159,9 @@
 
     <div id="overlay" onclick="this.style.display='none'">
         <div class="gift-box">
-            <h2 style="color: var(--pink-dark); margin-top: 0;">Happy Women's Day!</h2>
-            <p style="line-height: 1.6;">Tớ hy vọng món quà nhỏ này làm cậu mỉm cười. Chúc cậu một ngày 8/3 thật ý nghĩa và trọn vẹn nhé! ❤️</p>
-            <small style="opacity: 0.6;">(Bấm để đóng)</small>
+            <h2 style="color: var(--pink-dark)">Happy Women's Day!</h2>
+            <p>Tớ hy vọng món quà nhỏ này làm cậu mỉm cười. Chúc cậu một ngày 8/3 thật ý nghĩa và trọn vẹn nhé! ❤️</p>
+            <small>(Bấm để đóng)</small>
         </div>
     </div>
 
@@ -187,22 +174,20 @@
             "Đây là một chút kỷ niệm dành cho cậu..."
         ];
 
-        // Mảng ảnh (Bạn hãy thay link ảnh thật của bạn vào đây)
         const myImages = [
-            'https://picsum.photos/400/600?random=1',
-            'https://picsum.photos/400/600?random=2',
-            'https://picsum.photos/400/600?random=3',
-            'https://picsum.photos/400/600?random=4',
-            'https://picsum.photos/400/600?random=5',
-            'https://picsum.photos/400/600?random=6',
-            'https://picsum.photos/400/600?random=7',
-            'https://picsum.photos/400/600?random=8'
+            'https://picsum.photos/400/600?random=11',
+            'https://picsum.photos/400/600?random=12',
+            'https://picsum.photos/400/600?random=13',
+            'https://picsum.photos/400/600?random=14',
+            'https://picsum.photos/400/600?random=15',
+            'https://picsum.photos/400/600?random=16',
+            'https://picsum.photos/400/600?random=17',
+            'https://picsum.photos/400/600?random=18'
         ];
 
         let currentPhrase = 0;
 
         function startExperience() {
-            // Ẩn màn hình bắt đầu
             document.getElementById('start-screen').style.display = 'none';
             const textEl = document.getElementById('text-sequence');
             textEl.style.display = 'block';
@@ -214,7 +199,6 @@
             if (currentPhrase < phrases.length) {
                 textEl.innerText = phrases[currentPhrase];
                 textEl.className = 'fade-in';
-
                 setTimeout(() => {
                     textEl.className = 'fade-out';
                     setTimeout(() => {
@@ -229,43 +213,36 @@
         }
 
         function showMainContent() {
-            const bg = document.getElementById('photo-slider-bg');
-            bg.style.display = 'flex'; // Hiện nền ảnh
-            populateSlider();
-            
-            const main = document.getElementById('main-content');
-            main.style.display = 'flex'; // Hiện nút mở quà
+            document.getElementById('photo-float-container').style.display = 'block';
+            document.getElementById('main-content').style.display = 'flex';
+            createFloatingImages();
         }
 
-        function populateSlider() {
-            const container = document.getElementById('photo-slider-bg');
-            container.innerHTML = ''; // Xóa trắng trước khi tạo
-            
-            // Tính số cột dựa trên chiều rộng màn hình (mỗi cột khoảng 220px cả gap)
-            const columnCount = Math.ceil(window.innerWidth / 220) + 1;
+        function createFloatingImages() {
+            const container = document.getElementById('photo-float-container');
+            const totalImages = 25; // Số lượng ảnh xuất hiện trên màn hình
 
-            for (let i = 0; i < columnCount; i++) {
-                const col = document.createElement('div');
-                col.className = 'photo-column';
+            for (let i = 0; i < totalImages; i++) {
+                const img = document.createElement('img');
+                img.src = myImages[i % myImages.length];
+                img.className = 'floating-img';
                 
-                // Tốc độ và độ trễ ngẫu nhiên cho từng cột
-                const duration = 15 + Math.random() * 15; // Từ 15s đến 30s
-                const delay = Math.random() * -20;
-                col.style.animation = `scrollDown ${duration}s linear infinite`;
-                col.style.animationDelay = `${delay}s`;
+                // VỊ TRÍ NGẪU NHIÊN
+                const leftPos = Math.random() * 90; // Từ 0% đến 90% chiều rộng
+                const duration = 15 + Math.random() * 20; // Tốc độ rơi từ 15s đến 35s
+                const delay = Math.random() * -40; // Độ trễ âm để ảnh đã rơi sẵn khi vừa hiện
+                const rotation = (Math.random() - 0.5) * 30; // Xoay nhẹ ảnh từ -15 đến 15 độ
+                const zIndex = Math.floor(Math.random() * 10); // Độ ưu tiên chồng lớp ngẫu nhiên
+                const scale = 0.8 + Math.random() * 0.5; // Kích thước ảnh to nhỏ khác nhau
 
-                // Trộn ảnh ngẫu nhiên cho mỗi cột để không bị trùng lặp hàng ngang
-                const shuffled = [...myImages].sort(() => Math.random() - 0.5);
-                // Nhân bản ảnh để tạo hiệu ứng trượt vô tận
-                const combinedImages = [...shuffled, ...shuffled, ...shuffled];
+                img.style.left = `${leftPos}%`;
+                img.style.animationDuration = `${duration}s`;
+                img.style.animationDelay = `${delay}s`;
+                img.style.zIndex = zIndex;
+                img.style.setProperty('--rot', `${rotation}deg`);
+                img.style.width = `${200 * scale}px`;
 
-                combinedImages.forEach(src => {
-                    const img = document.createElement('img');
-                    img.src = src;
-                    img.className = 'slider-img';
-                    col.appendChild(img);
-                });
-                container.appendChild(col);
+                container.appendChild(img);
             }
         }
 
@@ -273,38 +250,25 @@
             document.getElementById('overlay').style.display = 'flex';
         }
 
-        // Canvas sao rơi
+        // Sao rơi nền
         const canvas = document.getElementById('bgCanvas');
         const ctx = canvas.getContext('2d');
         let stars = [];
-
         function initStars() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
             stars = [];
-            for(let i=0; i<80; i++) {
-                stars.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    s: Math.random() * 2,
-                    v: 0.2 + Math.random() * 0.5
-                });
-            }
+            for(let i=0; i<80; i++) stars.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, s: Math.random()*2, v: 0.3});
         }
-
         function drawStars() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.fillStyle = "white";
             stars.forEach(s => {
-                ctx.beginPath();
-                ctx.arc(s.x, s.y, s.s, 0, Math.PI * 2);
-                ctx.fill();
-                s.y += s.v;
-                if(s.y > canvas.height) s.y = 0;
+                ctx.beginPath(); ctx.arc(s.x, s.y, s.s, 0, Math.PI*2); ctx.fill();
+                s.y += s.v; if(s.y > canvas.height) s.y = 0;
             });
             requestAnimationFrame(drawStars);
         }
-
         window.onload = () => { initStars(); drawStars(); };
         window.onresize = initStars;
     </script>
