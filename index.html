@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Món Quà Đặc Biệt 8/3</title>
+    <title>Gửi Cậu 8/3 ✨</title>
     <style>
         :root {
             --pink-dark: #ff1493;
             --pink-light: #ffb6c1;
+            --card-bg: #fffafa;
         }
 
         body, html {
@@ -19,10 +20,8 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            color: white;
         }
 
-        /* Nền sao rơi */
         #bgCanvas {
             position: fixed;
             top: 0; left: 0;
@@ -33,119 +32,141 @@
         /* 1. Màn hình bắt đầu */
         #start-screen {
             position: relative;
-            z-index: 100;
+            z-index: 1000;
             text-align: center;
         }
         .btn-start {
-            padding: 15px 30px;
-            background: rgba(255, 255, 255, 0.1);
+            padding: 15px 35px;
+            background: rgba(255, 182, 193, 0.2);
             border: 2px solid var(--pink-light);
             color: white;
-            border-radius: 10px;
+            border-radius: 50px;
             cursor: pointer;
-            backdrop-filter: blur(5px);
-            font-size: 1.1rem;
+            backdrop-filter: blur(10px);
+            font-size: 1.2rem;
+            transition: 0.3s;
         }
 
-        /* 2. Chuỗi chữ biến đổi */
         #text-sequence {
             display: none;
             position: relative;
-            z-index: 50;
-            font-size: 1.8rem;
+            z-index: 500;
+            font-size: 1.5rem;
             text-align: center;
             max-width: 80%;
             color: var(--pink-light);
             text-shadow: 0 0 10px var(--pink-dark);
         }
 
-        /* 3. HIỆU ỨNG ẢNH CHẠY LƯỚT XUỐNG (Background Slider) */
-        #photo-slider-bg {
-            display: none; /* Chỉ hiện sau khi chạy chữ xong */
+        /* 2. Ảnh trôi ngẫu nhiên */
+        #photo-float-container {
+            display: none;
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
             z-index: 5;
-            display: flex;
-            justify-content: space-around;
-            opacity: 0.4; /* Làm mờ để nổi bật nút bấm */
+            pointer-events: none;
         }
-
-        .photo-column {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            animation: scrollDown 20s linear infinite;
-        }
-
-        /* Cột 2 chạy ngược lại hoặc tốc độ khác cho sinh động */
-        .column-reverse {
-            animation: scrollDown 25s linear infinite reverse;
-        }
-
-        @keyframes scrollDown {
-            0% { transform: translateY(-50%); }
-            100% { transform: translateY(0%); }
-        }
-
-        .slider-img {
-            width: 120px;
-            height: 160px;
-            object-fit: cover;
+        .floating-img {
+            position: absolute;
+            width: 150px;
             border-radius: 10px;
-            border: 2px solid white;
+            border: 2px solid rgba(255,255,255,0.3);
+            opacity: 0.4;
+            animation: floatDown linear infinite;
+        }
+        @keyframes floatDown {
+            from { transform: translateY(-110vh) rotate(var(--rot)); }
+            to { transform: translateY(110vh) rotate(var(--rot)); }
         }
 
-        /* 4. Nút Mở Quà nằm trên cùng */
+        /* 3. HIỆU ỨNG THIỆP/QUYỂN VỞ */
         #main-content {
             display: none;
             position: relative;
-            z-index: 20;
-            flex-direction: column;
-            align-items: center;
+            z-index: 1000;
+            perspective: 1500px;
         }
 
-        .btn-open-gift {
-            padding: 20px 50px;
+        .book {
+            position: relative;
+            width: 280px;
+            height: 380px;
+            transform-style: preserve-3d;
+            transition: transform 1s cubic-bezier(0.15, 0.45, 0.3, 1);
+        }
+
+        /* Tờ bìa (Mặt trước) */
+        .cover {
+            position: absolute;
+            width: 100%;
+            height: 100%;
             background: var(--pink-dark);
-            border: none;
             color: white;
-            font-weight: bold;
-            border-radius: 50px;
-            cursor: pointer;
-            font-size: 1.5rem;
-            box-shadow: 0 0 30px var(--pink-dark);
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        /* 5. Lời chúc cuối */
-        #overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 200;
+            display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-        }
-        .gift-box {
-            background: #1a1a1a;
-            padding: 30px;
-            border: 2px solid var(--pink-dark);
-            border-radius: 20px;
-            text-align: center;
-            max-width: 300px;
+            border-radius: 0 15px 15px 0; /* Bo góc bên phải */
+            box-shadow: 5px 5px 20px rgba(0,0,0,0.5);
+            transform-origin: left; /* Quay quanh trục bên trái */
+            transition: transform 1s ease;
+            z-index: 10;
+            cursor: pointer;
+            border-left: 3px solid rgba(0,0,0,0.2); /* Tạo gáy vở */
         }
 
-        .fade-in { animation: fadeIn 1s forwards; }
-        .fade-out { animation: fadeOut 1s forwards; }
+        /* Trang bên trong */
+        .page-inside {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: var(--card-bg);
+            border-radius: 0 15px 15px 0;
+            padding: 30px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            z-index: 5;
+            color: #333;
+            box-shadow: inset 5px 0 10px rgba(0,0,0,0.1);
+        }
+
+        /* Trạng thái khi mở vở */
+        .book.open .cover {
+            transform: rotateY(-160deg);
+        }
+
+        .cover h2 { margin: 10px 0; font-size: 1.4rem; }
+        .heart-icon { font-size: 4rem; animation: beat 1s infinite; }
+
+        #typing-text { font-size: 1.1rem; line-height: 1.6; color: #444; }
+
+        @keyframes beat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+
+        #typing-text::after {
+            content: '|';
+            animation: blink 0.7s infinite;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        .hint {
+            position: absolute;
+            bottom: -60px;
+            width: 100%;
+            text-align: center;
+            color: var(--pink-light);
+            font-size: 0.9rem;
+        }
+
+        .fade-in { animation: fadeIn 0.8s forwards; }
+        .fade-out { animation: fadeOut 0.8s forwards; }
         @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
         @keyframes fadeOut { from {opacity: 1;} to {opacity: 0;} }
     </style>
@@ -155,49 +176,49 @@
     <canvas id="bgCanvas"></canvas>
 
     <div id="start-screen">
-        <button class="btn-start" onclick="startExperience()">Bấm vào đây nè ✨</button>
+        <button class="btn-start" onclick="startExperience()">Mở quà ngay 🎀</button>
     </div>
 
     <div id="text-sequence"></div>
 
-    <div id="photo-slider-bg">
-        <div class="photo-column" id="col1"></div>
-        <div class="photo-column column-reverse" id="col2"></div>
-        <div class="photo-column" id="col3"></div>
-    </div>
+    <div id="photo-float-container"></div>
 
     <div id="main-content">
-        <button class="btn-open-gift" onclick="showFinalGift()">Mở Quà Cho Cậu 🎁</button>
-    </div>
-
-    <div id="overlay" onclick="this.style.display='none'">
-        <div class="gift-box">
-            <h2 style="color: var(--pink-dark)">Happy Women's Day!</h2>
-            <p>Tớ hy vọng món quà nhỏ này làm cậu mỉm cười. Chúc cậu một ngày 8/3 thật ý nghĩa và trọn vẹn nhé! ❤️</p>
-            <small>(Bấm để đóng)</small>
+        <div class="book" id="myBook">
+            <div class="cover" onclick="openBook()">
+                <div class="heart-icon">❤️</div>
+                <h2>Gửi Cậu...</h2>
+                <small>Chạm để mở quyển vở nhỏ</small>
+            </div>
+            <div class="page-inside" onclick="openBook()">
+                <h2 style="color: var(--pink-dark); margin-top: 0;">Happy 8/3!</h2>
+                <div id="typing-text"></div>
+            </div>
         </div>
+        <div class="hint">Bấm vào bìa để lật trang nhé</div>
     </div>
 
     <script>
         const phrases = [
-            "Chào bạn nữ trước màn hình...",
+            "Chào bạn nữ xinh xắn...",
             "Nhân ngày Quốc tế Phụ nữ 8/3",
-            "Tớ chúc cậu luôn xinh đẹp, rạng rỡ",
-            "Và luôn hạnh phúc với những gì mình chọn!",
-            "Đây là một chút kỷ niệm dành cho cậu..."
+            "Tớ có một điều bất ngờ nhỏ...",
+            "Dành riêng cho cậu thôi đấy!",
+            "Sẵn sàng chưa nào? ✨"
         ];
 
-        // LINK ẢNH CỦA BẠN (Thay vào đây nhé)
+        const fullMessage = "Chúc cậu một ngày 8/3 thật hạnh phúc, luôn rạng rỡ như ánh mặt trời và gặp thật nhiều may mắn trong cuộc sống nhé! Cậu xứng đáng với những điều tốt đẹp nhất. ❤️";
+
         const myImages = [
-            'https://picsum.photos/200/300?random=1',
-            'https://picsum.photos/200/300?random=2',
-            'https://picsum.photos/200/300?random=3',
-            'https://picsum.photos/200/300?random=4',
-            'https://picsum.photos/200/300?random=5',
-            'https://picsum.photos/200/300?random=6'
+            'https://picsum.photos/300/400?random=1',
+            'https://picsum.photos/300/400?random=2',
+            'https://picsum.photos/300/400?random=3',
+            'https://picsum.photos/300/400?random=4',
+            'https://picsum.photos/300/400?random=5'
         ];
 
         let currentPhrase = 0;
+        let typingStarted = false;
 
         function startExperience() {
             document.getElementById('start-screen').style.display = 'none';
@@ -210,17 +231,14 @@
             const textEl = document.getElementById('text-sequence');
             if (currentPhrase < phrases.length) {
                 textEl.innerText = phrases[currentPhrase];
-                textEl.classList.remove('fade-out');
-                textEl.classList.add('fade-in');
-
+                textEl.className = 'fade-in';
                 setTimeout(() => {
-                    textEl.classList.remove('fade-in');
-                    textEl.classList.add('fade-out');
+                    textEl.className = 'fade-out';
                     setTimeout(() => {
                         currentPhrase++;
                         runTextSequence();
-                    }, 1000);
-                }, 2500);
+                    }, 800);
+                }, 2200);
             } else {
                 textEl.style.display = 'none';
                 showMainContent();
@@ -228,31 +246,45 @@
         }
 
         function showMainContent() {
-            document.getElementById('photo-slider-bg').style.display = 'flex';
+            document.getElementById('photo-float-container').style.display = 'block';
             document.getElementById('main-content').style.display = 'flex';
-            populateSlider();
+            createFloatingImages();
         }
 
-        function populateSlider() {
-            const columns = ['col1', 'col2', 'col3'];
-            columns.forEach(colId => {
-                const col = document.getElementById(colId);
-                // Nhân đôi mảng ảnh để tạo hiệu ứng lặp vô tận (Infinity scroll)
-                const doubleImages = [...myImages, ...myImages, ...myImages];
-                doubleImages.forEach(src => {
-                    const img = document.createElement('img');
-                    img.src = src;
-                    img.className = 'slider-img';
-                    col.appendChild(img);
-                });
-            });
+        function createFloatingImages() {
+            const container = document.getElementById('photo-float-container');
+            for (let i = 0; i < 20; i++) {
+                const img = document.createElement('img');
+                img.src = myImages[i % myImages.length];
+                img.className = 'floating-img';
+                img.style.left = Math.random() * 85 + '%';
+                img.style.animationDuration = (15 + Math.random() * 15) + 's';
+                img.style.animationDelay = (Math.random() * -30) + 's';
+                img.style.setProperty('--rot', (Math.random() - 0.5) * 40 + 'deg');
+                container.appendChild(img);
+            }
         }
 
-        function showFinalGift() {
-            document.getElementById('overlay').style.display = 'flex';
+        function openBook() {
+            const book = document.getElementById('myBook');
+            book.classList.toggle('open');
+            
+            if (book.classList.contains('open') && !typingStarted) {
+                typingStarted = true;
+                setTimeout(() => {
+                    typeWriter(fullMessage, 0);
+                }, 800);
+            }
         }
 
-        // Vẽ sao nền cho lung linh
+        function typeWriter(text, i) {
+            if (i < text.length) {
+                document.getElementById("typing-text").innerHTML = text.substring(0, i + 1);
+                setTimeout(() => typeWriter(text, i + 1), 60);
+            }
+        }
+
+        // Sao nền
         const canvas = document.getElementById('bgCanvas');
         const ctx = canvas.getContext('2d');
         let stars = [];
@@ -260,14 +292,14 @@
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
             stars = [];
-            for(let i=0; i<100; i++) stars.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, s: Math.random()*2});
+            for(let i=0; i<80; i++) stars.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, s: Math.random()*2, v: 0.3});
         }
         function drawStars() {
             ctx.clearRect(0,0,canvas.width,canvas.height);
             ctx.fillStyle = "white";
             stars.forEach(s => {
                 ctx.beginPath(); ctx.arc(s.x, s.y, s.s, 0, Math.PI*2); ctx.fill();
-                s.y += 0.3; if(s.y > canvas.height) s.y = 0;
+                s.y += s.v; if(s.y > canvas.height) s.y = 0;
             });
             requestAnimationFrame(drawStars);
         }
