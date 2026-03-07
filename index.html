@@ -22,7 +22,6 @@
             color: white;
         }
 
-        /* Nền sao rơi */
         #bgCanvas {
             position: fixed;
             top: 0; left: 0;
@@ -30,7 +29,6 @@
             pointer-events: none;
         }
 
-        /* 1. Màn hình bắt đầu */
         #start-screen {
             position: relative;
             z-index: 100;
@@ -45,9 +43,10 @@
             cursor: pointer;
             backdrop-filter: blur(5px);
             font-size: 1.1rem;
+            transition: 0.3s;
         }
+        .btn-start:hover { background: var(--pink-dark); }
 
-        /* 2. Chuỗi chữ biến đổi */
         #text-sequence {
             display: none;
             position: relative;
@@ -59,44 +58,43 @@
             text-shadow: 0 0 10px var(--pink-dark);
         }
 
-        /* 3. HIỆU ỨNG ẢNH CHẠY LƯỚT XUỐNG (Background Slider) */
+        /* --- HIỆU ỨNG ẢNH NỀN MỚI --- */
         #photo-slider-bg {
-            display: none; /* Chỉ hiện sau khi chạy chữ xong */
+            display: none; 
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
             z-index: 5;
+            overflow: hidden;
             display: flex;
-            justify-content: space-around;
-            opacity: 0.4; /* Làm mờ để nổi bật nút bấm */
+            justify-content: center;
+            gap: 15px; /* Khoảng cách giữa các cột */
+            opacity: 0.5; /* Độ mờ để làm nổi bật nút bấm */
         }
 
         .photo-column {
             display: flex;
             flex-direction: column;
-            gap: 20px;
-            animation: scrollDown 20s linear infinite;
-        }
-
-        /* Cột 2 chạy ngược lại hoặc tốc độ khác cho sinh động */
-        .column-reverse {
-            animation: scrollDown 25s linear infinite reverse;
+            gap: 15px;
+            /* Animation sẽ được gán ngẫu nhiên bằng JS */
         }
 
         @keyframes scrollDown {
-            0% { transform: translateY(-50%); }
+            0% { transform: translateY(-100%); }
             100% { transform: translateY(0%); }
         }
 
         .slider-img {
-            width: 120px;
-            height: 160px;
+            width: 180px; /* Tăng kích thước ảnh */
+            height: 250px;
             object-fit: cover;
-            border-radius: 10px;
-            border: 2px solid white;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
         }
 
-        /* 4. Nút Mở Quà nằm trên cùng */
+        /* --------------------------- */
+
         #main-content {
             display: none;
             position: relative;
@@ -124,7 +122,6 @@
             100% { transform: scale(1); }
         }
 
-        /* 5. Lời chúc cuối */
         #overlay {
             display: none;
             position: fixed;
@@ -160,11 +157,7 @@
 
     <div id="text-sequence"></div>
 
-    <div id="photo-slider-bg">
-        <div class="photo-column" id="col1"></div>
-        <div class="photo-column column-reverse" id="col2"></div>
-        <div class="photo-column" id="col3"></div>
-    </div>
+    <div id="photo-slider-bg"></div>
 
     <div id="main-content">
         <button class="btn-open-gift" onclick="showFinalGift()">Mở Quà Cho Cậu 🎁</button>
@@ -187,14 +180,16 @@
             "Đây là một chút kỷ niệm dành cho cậu..."
         ];
 
-        // LINK ẢNH CỦA BẠN (Thay vào đây nhé)
+        // LINK ẢNH (Nên để ít nhất 10-15 ảnh để hiệu ứng mượt hơn)
         const myImages = [
-            'https://picsum.photos/200/300?random=1',
-            'https://picsum.photos/200/300?random=2',
-            'https://picsum.photos/200/300?random=3',
-            'https://picsum.photos/200/300?random=4',
-            'https://picsum.photos/200/300?random=5',
-            'https://picsum.photos/200/300?random=6'
+            'https://picsum.photos/400/600?random=1',
+            'https://picsum.photos/400/600?random=2',
+            'https://picsum.photos/400/600?random=3',
+            'https://picsum.photos/400/600?random=4',
+            'https://picsum.photos/400/600?random=5',
+            'https://picsum.photos/400/600?random=6',
+            'https://picsum.photos/400/600?random=7',
+            'https://picsum.photos/400/600?random=8'
         ];
 
         let currentPhrase = 0;
@@ -228,31 +223,47 @@
         }
 
         function showMainContent() {
-            document.getElementById('photo-slider-bg').style.display = 'flex';
+            const bg = document.getElementById('photo-slider-bg');
+            bg.style.display = 'flex';
             document.getElementById('main-content').style.display = 'flex';
             populateSlider();
         }
 
         function populateSlider() {
-            const columns = ['col1', 'col2', 'col3'];
-            columns.forEach(colId => {
-                const col = document.getElementById(colId);
-                // Nhân đôi mảng ảnh để tạo hiệu ứng lặp vô tận (Infinity scroll)
-                const doubleImages = [...myImages, ...myImages, ...myImages];
-                doubleImages.forEach(src => {
+            const container = document.getElementById('photo-slider-bg');
+            // Tính số lượng cột dựa trên chiều rộng màn hình
+            const columnCount = Math.ceil(window.innerWidth / 180) + 1; 
+
+            for (let i = 0; i < columnCount; i++) {
+                const col = document.createElement('div');
+                col.className = 'photo-column';
+                
+                // Gán tốc độ ngẫu nhiên từ 15s đến 30s
+                const duration = Math.random() * 15 + 15;
+                // Gán độ trễ ngẫu nhiên để các cột không chạy cùng lúc
+                const delay = Math.random() * -20; 
+                col.style.animation = `scrollDown ${duration}s linear infinite`;
+                col.style.animationDelay = `${delay}s`;
+
+                // Trộn ảnh ngẫu nhiên cho mỗi cột
+                const shuffledImages = [...myImages].sort(() => 0.5 - Math.random());
+                const tripleImages = [...shuffledImages, ...shuffledImages, ...shuffledImages];
+
+                tripleImages.forEach(src => {
                     const img = document.createElement('img');
                     img.src = src;
                     img.className = 'slider-img';
                     col.appendChild(img);
                 });
-            });
+                container.appendChild(col);
+            }
         }
 
         function showFinalGift() {
             document.getElementById('overlay').style.display = 'flex';
         }
 
-        // Vẽ sao nền cho lung linh
+        // Vẽ sao nền
         const canvas = document.getElementById('bgCanvas');
         const ctx = canvas.getContext('2d');
         let stars = [];
@@ -266,13 +277,4 @@
             ctx.clearRect(0,0,canvas.width,canvas.height);
             ctx.fillStyle = "white";
             stars.forEach(s => {
-                ctx.beginPath(); ctx.arc(s.x, s.y, s.s, 0, Math.PI*2); ctx.fill();
-                s.y += 0.3; if(s.y > canvas.height) s.y = 0;
-            });
-            requestAnimationFrame(drawStars);
-        }
-        window.onload = () => { initStars(); drawStars(); };
-        window.onresize = initStars;
-    </script>
-</body>
-</html>
+                ctx.beginPath(); ctx
