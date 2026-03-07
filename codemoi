@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Chúc mừng 8/3</title>
+
+<style>
+body{
+background:pink;
+text-align:center;
+font-family:Arial;
+}
+
+h1{
+margin-top:100px;
+font-size:40px;
+color:red;
+}
+
+img{
+width:250px;
+margin-top:20px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>🌸 Chúc mừng ngày 8/3 🌸</h1>
+
+<p>Chúc bạn luôn vui vẻ và hạnh phúc 💖</p>
+
+<img src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif">
+
+<br><br>
+
+<video width="300" autoplay loop>
+<source src="https://www.w3schools.com/html/mov_bbb.mp4">
+</video>
+
+</body>
+</html>
