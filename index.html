@@ -58,26 +58,24 @@
             text-shadow: 0 0 15px var(--pink-dark);
         }
 
-        /* --- HIỆU ỨNG ẢNH NGẪU NHIÊN --- */
         #photo-float-container {
             display: none;
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
             z-index: 5;
-            pointer-events: none; /* Để không chặn click vào nút bấm */
+            pointer-events: none;
         }
 
         .floating-img {
             position: absolute;
-            width: 220px; /* Ảnh to */
+            width: 220px;
             height: auto;
             border-radius: 15px;
             border: 2px solid rgba(255,255,255,0.3);
             box-shadow: 0 10px 30px rgba(0,0,0,0.8);
             opacity: 0.6;
             will-change: transform;
-            /* Hiệu ứng trôi xuống */
             animation: floatDown linear infinite;
         }
 
@@ -85,8 +83,6 @@
             from { transform: translateY(-120vh) rotate(var(--rot)); }
             to { transform: translateY(120vh) rotate(var(--rot)); }
         }
-
-        /* ------------------------------ */
 
         #main-content {
             display: none;
@@ -115,6 +111,7 @@
             100% { transform: scale(1); }
         }
 
+        /* Overlay & Gift Box */
         #overlay {
             display: none;
             position: fixed;
@@ -133,6 +130,19 @@
             border-radius: 30px;
             text-align: center;
             max-width: 350px;
+            min-height: 200px;
+        }
+
+        /* Hiệu ứng con trỏ nhấp nháy khi đang đánh chữ */
+        #typing-text::after {
+            content: '|';
+            animation: blink 0.7s infinite;
+            color: var(--pink-light);
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
         }
 
         .fade-in { animation: fadeIn 0.8s forwards; }
@@ -157,11 +167,12 @@
         <button class="btn-open-gift" onclick="showFinalGift()">Mở Quà Cho Cậu 🎁</button>
     </div>
 
-    <div id="overlay" onclick="this.style.display='none'">
-        <div class="gift-box">
+    <div id="overlay" onclick="closeOverlay()">
+        <div class="gift-box" onclick="event.stopPropagation()">
             <h2 style="color: var(--pink-dark)">Happy Women's Day!</h2>
-            <p>Tớ hy vọng món quà nhỏ này làm cậu mỉm cười. Chúc cậu một ngày 8/3 thật ý nghĩa và trọn vẹn nhé! ❤️</p>
-            <small>(Bấm để đóng)</small>
+            <p id="typing-text" style="line-height: 1.6; min-height: 3em;"></p>
+            <br>
+            <small style="opacity: 0.5; cursor: pointer;" onclick="closeOverlay()">[Bấm để đóng]</small>
         </div>
     </div>
 
@@ -174,9 +185,11 @@
             "Đây là một chút kỷ niệm dành cho cậu..."
         ];
 
+        const fullMessage = "Tớ hy vọng món quà nhỏ này làm cậu mỉm cười. Chúc cậu một ngày 8/3 thật ý nghĩa, hạnh phúc và luôn là bông hoa rạng rỡ nhất nhé! ❤️";
+
         const myImages = [
             'https://picsum.photos/400/600?random=11',
-            'nagiseishiro.jpg',
+            'https://picsum.photos/400/600?random=12',
             'https://picsum.photos/400/600?random=13',
             'https://picsum.photos/400/600?random=14',
             'https://picsum.photos/400/600?random=15',
@@ -220,20 +233,19 @@
 
         function createFloatingImages() {
             const container = document.getElementById('photo-float-container');
-            const totalImages = 25; // Số lượng ảnh xuất hiện trên màn hình
+            const totalImages = 25; 
 
             for (let i = 0; i < totalImages; i++) {
                 const img = document.createElement('img');
                 img.src = myImages[i % myImages.length];
                 img.className = 'floating-img';
                 
-                // VỊ TRÍ NGẪU NHIÊN
-                const leftPos = Math.random() * 90; // Từ 0% đến 90% chiều rộng
-                const duration = 15 + Math.random() * 20; // Tốc độ rơi từ 15s đến 35s
-                const delay = Math.random() * -40; // Độ trễ âm để ảnh đã rơi sẵn khi vừa hiện
-                const rotation = (Math.random() - 0.5) * 30; // Xoay nhẹ ảnh từ -15 đến 15 độ
-                const zIndex = Math.floor(Math.random() * 10); // Độ ưu tiên chồng lớp ngẫu nhiên
-                const scale = 0.8 + Math.random() * 0.5; // Kích thước ảnh to nhỏ khác nhau
+                const leftPos = Math.random() * 90;
+                const duration = 15 + Math.random() * 20;
+                const delay = Math.random() * -40;
+                const rotation = (Math.random() - 0.5) * 30;
+                const zIndex = Math.floor(Math.random() * 10);
+                const scale = 0.8 + Math.random() * 0.5;
 
                 img.style.left = `${leftPos}%`;
                 img.style.animationDuration = `${duration}s`;
@@ -246,8 +258,28 @@
             }
         }
 
+        // HÀM ĐÁNH CHỮ
+        function typeWriter(text, i, fnCallback) {
+            if (i < text.length) {
+                document.getElementById("typing-text").innerHTML = text.substring(0, i+1);
+                setTimeout(function() {
+                    typeWriter(text, i + 1, fnCallback)
+                }, 70); // Tốc độ đánh chữ (ms)
+            } else if (typeof fnCallback == 'function') {
+                setTimeout(fnCallback, 700);
+            }
+        }
+
         function showFinalGift() {
             document.getElementById('overlay').style.display = 'flex';
+            document.getElementById("typing-text").innerHTML = ""; // Xóa text cũ
+            setTimeout(() => {
+                typeWriter(fullMessage, 0);
+            }, 500);
+        }
+
+        function closeOverlay() {
+            document.getElementById('overlay').style.display = 'none';
         }
 
         // Sao rơi nền
