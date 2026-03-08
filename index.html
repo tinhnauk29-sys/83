@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gửi Cậu 8/3 ✨</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@500&display=swap" rel="stylesheet">
     <style>
-        /* ... (Giữ nguyên phần CSS cũ của cậu) ... */
         :root {
             --pink-dark: #d4145a;
             --pink-main: #ff1493;
@@ -18,57 +18,166 @@
             margin: 0; padding: 0;
             width: 100%; height: 100%;
             background: #000;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Quicksand', sans-serif;
             overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
-        #bgCanvas { position: fixed; top: 0; left: 0; z-index: 1; pointer-events: none; }
-        #start-screen { position: relative; z-index: 1000; text-align: center; }
+        #bgCanvas {
+            position: fixed;
+            top: 0; left: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Màn hình bắt đầu */
+        #start-screen {
+            position: relative;
+            z-index: 1000;
+            text-align: center;
+        }
         .btn-start {
             padding: 18px 40px;
             background: linear-gradient(45deg, var(--pink-dark), var(--pink-main));
-            border: none; color: white; border-radius: 50px;
-            cursor: pointer; font-size: 1.3rem; font-weight: bold;
+            border: none;
+            color: white;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.3rem;
+            font-weight: bold;
             box-shadow: 0 10px 20px rgba(255, 20, 147, 0.4);
             transition: 0.3s;
+            animation: pulse 2s infinite;
         }
-        #text-sequence { display: none; position: relative; z-index: 500; font-size: 1.8rem; text-align: center; color: white; text-shadow: 0 0 15px var(--pink-main); font-style: italic; }
-        #photo-float-container { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; pointer-events: none; }
-        .floating-img { position: absolute; width: 200px; border-radius: 15px; border: 3px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.3); opacity: 0.6; animation: floatDown linear infinite; }
-        @keyframes floatDown { from { transform: translateY(-110vh) rotate(var(--rot)); } to { transform: translateY(110vh) rotate(var(--rot)); } }
-        #main-content { display: none; position: relative; z-index: 1000; perspective: 2000px; }
-        .book { position: relative; width: 320px; height: 450px; transform-style: preserve-3d; transition: transform 1.2s cubic-bezier(0.15, 0.45, 0.3, 1); }
-        .cover { position: absolute; width: 100%; height: 100%; background: linear-gradient(135deg, var(--pink-dark) 0%, var(--pink-main) 100%); border-radius: 5px 15px 15px 5px; box-shadow: 10px 10px 30px rgba(0,0,0,0.5); transform-origin: left; z-index: 10; cursor: pointer; display: flex; flex-direction: column; justify-content: center; align-items: center; border-left: 5px solid rgba(0,0,0,0.3); transition: transform 1s; backface-visibility: hidden; }
-        .cover::before { content: ''; position: absolute; left: 40px; top: 0; width: 30px; height: 100%; background: rgba(255, 255, 255, 0.2); }
-        .cover-content { color: white; text-align: center; padding: 20px; border: 2px solid rgba(255,255,255,0.4); margin: 20px; background: rgba(0,0,0,0.1); }
-        .page-inside { position: absolute; width: 100%; height: 100%; background: var(--card-bg); background-image: radial-gradient(#ffb6c1 0.5px, transparent 0.5px); background-size: 20px 20px; border-radius: 0 15px 15px 0; padding: 40px 30px; box-sizing: border-box; display: flex; flex-direction: column; z-index: 5; box-shadow: inset 10px 0 20px rgba(0,0,0,0.1); }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Chuỗi văn bản dẫn dắt */
+        #text-sequence {
+            display: none;
+            position: relative;
+            z-index: 500;
+            font-size: 1.8rem;
+            text-align: center;
+            color: white;
+            text-shadow: 0 0 15px var(--pink-main);
+            font-style: italic;
+            padding: 20px;
+        }
+
+        /* Ảnh trôi */
+        #photo-float-container {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 5;
+            pointer-events: none;
+        }
+        .floating-img {
+            position: absolute;
+            width: 150px;
+            border-radius: 10px;
+            border: 3px solid white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            opacity: 0.5;
+            animation: floatDown linear infinite;
+        }
+        @keyframes floatDown {
+            from { transform: translateY(-110vh) rotate(var(--rot)); }
+            to { transform: translateY(110vh) rotate(var(--rot)); }
+        }
+
+        /* THIỆP 3D */
+        #main-content {
+            display: none;
+            position: relative;
+            z-index: 1000;
+            perspective: 2000px;
+        }
+
+        .book {
+            position: relative;
+            width: 320px;
+            height: 450px;
+            transform-style: preserve-3d;
+            transition: transform 1.2s cubic-bezier(0.15, 0.45, 0.3, 1);
+        }
+
+        .cover {
+            position: absolute;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, var(--pink-dark) 0%, var(--pink-main) 100%);
+            border-radius: 5px 15px 15px 5px;
+            box-shadow: 10px 10px 30px rgba(0,0,0,0.5);
+            transform-origin: left;
+            z-index: 10;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: transform 1s;
+            backface-visibility: hidden;
+        }
+
         .book.open .cover { transform: rotateY(-150deg); }
-        .heart-icon { font-size: 4.5rem; filter: drop-shadow(0 0 10px white); animation: beat 1.2s infinite; }
-        #typing-text { font-size: 1.15rem; line-height: 1.8; color: #444; font-weight: 500; text-align: justify; }
-        @keyframes beat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
-        .hint { position: absolute; bottom: -50px; width: 100%; text-align: center; color: white; font-weight: 300; letter-spacing: 1px; opacity: 0.8; }
+
+        .page-inside {
+            position: absolute;
+            width: 100%; height: 100%;
+            background: var(--card-bg);
+            border-radius: 0 15px 15px 0;
+            padding: 30px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            z-index: 5;
+            box-shadow: inset 10px 0 20px rgba(0,0,0,0.1);
+        }
+
+        .heart-icon { font-size: 4rem; animation: beat 1.2s infinite; }
+        @keyframes beat { 50% { transform: scale(1.1); } }
+
+        #typing-text { 
+            font-size: 1.1rem; 
+            line-height: 1.6; 
+            color: #444; 
+            text-align: justify;
+            margin-top: 15px;
+        }
+
+        .hint {
+            position: absolute;
+            bottom: -60px;
+            width: 100%;
+            text-align: center;
+            color: white;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        /* Hiệu ứng ẩn hiện */
         .fade-in { animation: fadeIn 0.8s forwards; }
         .fade-out { animation: fadeOut 0.8s forwards; }
         @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
         @keyframes fadeOut { from {opacity: 1;} to {opacity: 0;} }
+
+        /* Tim bay */
         .confetti { position: absolute; z-index: 1001; pointer-events: none; }
         
         /* Ẩn trình phát YouTube */
-        #youtube-player {
-            position: absolute;
-            width: 0; height: 0;
-            pointer-events: none;
-            opacity: 0;
-        }
+        #youtube-player { position: absolute; width: 0; height: 0; opacity: 0; }
     </style>
 </head>
 <body>
 
     <canvas id="bgCanvas"></canvas>
-
     <div id="youtube-player"></div>
 
     <div id="start-screen">
@@ -76,130 +185,110 @@
     </div>
 
     <div id="text-sequence"></div>
+
     <div id="photo-float-container"></div>
 
     <div id="main-content">
         <div class="book" id="myBook">
             <div class="cover" onclick="openBook()">
-                <div class="cover-content">
+                <div style="border: 2px solid rgba(255,255,255,0.4); padding: 20px; margin: 20px; text-align: center; color: white;">
                     <div class="heart-icon">💝</div>
-                    <h2 style="margin: 15px 0 5px;">Gửi Cậu...</h2>
-                    <p style="font-size: 0.9rem; opacity: 0.9;">Phụ nữ là để yêu thương</p>
+                    <h2 style="font-family: 'Dancing Script', cursive; font-size: 2rem;">Gửi Cậu...</h2>
+                    <p>8 tháng 3 ý nghĩa</p>
                 </div>
-                <small style="position: absolute; bottom: 30px; color: var(--gold);">Chạm để mở thiệp ✨</small>
+                <small style="color: var(--gold); position: absolute; bottom: 20px;">Chạm để mở thiệp ✨</small>
             </div>
             <div class="page-inside">
-                <h2 style="color: var(--pink-dark); margin-top: 0; text-align: center;">Happy Women's Day!</h2>
-                <hr style="width: 50%; border: 0.5px solid var(--pink-light); margin-bottom: 20px;">
+                <h2 style="color: var(--pink-dark); text-align: center; font-family: 'Dancing Script', cursive; font-size: 1.8rem; margin-bottom: 5px;">Happy Women's Day!</h2>
+                <center><hr style="width: 60%; border: 0.5px solid var(--pink-light);"></center>
                 <div id="typing-text"></div>
-                <div style="margin-top: auto; text-align: right; color: var(--pink-dark); font-weight: bold;">- From Me with Love -</div>
+                <div style="margin-top: auto; text-align: right; color: var(--pink-dark); font-weight: bold; font-family: 'Dancing Script', cursive; font-size: 1.2rem;">
+                    - From Me with Love -
+                </div>
             </div>
         </div>
-        <div class="hint">Bấm vào thiệp để xem nội dung bên trong</div>
+        <div class="hint">Bấm vào thiệp để xem điều bất ngờ</div>
     </div>
 
     <script src="https://www.youtube.com/iframe_api"></script>
 
     <script>
-        // CÀI ĐẶT NHẠC TẠI ĐÂY
-        const youtubeVideoId = "jPjQJYKhhk4"; // Thay ID video "Phép Màu" của cậu vào đây
+        // CÀI ĐẶT
+        const youtubeId = "jPjQJYKhhk4"; // ID bài Phép Màu
+        const phrases = [
+            "Chào cậu, một ngày 8/3 thật đẹp...",
+            "Tớ có điều này muốn gửi đến cậu",
+            "Lắng nghe giai điệu này nhé...",
+            "Sẵn sàng chưa? ✨",
+            "3... 2... 1..."
+        ];
+        const fullMessage = "Chúc cậu một ngày 8/3 thật hạnh phúc, luôn rạng rỡ như ánh mặt trời và gặp thật nhiều may mắn. Cậu là một cô gái tuyệt vời và xứng đáng với tất cả những điều ngọt ngào nhất thế giới này! ❤️";
 
         let player;
+        let isReady = false;
+
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('youtube-player', {
-                height: '0',
-                width: '0',
-                videoId: youtubeVideoId,
-                playerVars: {
-                    'autoplay': 0,
-                    'controls': 0,
-                    'loop': 1,
-                    'playlist': youtubeVideoId // Cần thiết để loop
-                }
+                videoId: youtubeId,
+                playerVars: { 'autoplay': 0, 'controls': 0, 'loop': 1, 'playlist': youtubeId },
+                events: { 'onReady': () => { isReady = true; } }
             });
         }
 
-        const phrases = [
-            "Chào bạn nữ xinh xắn nhất tớ biết...",
-            "Nay là một ngày rất đặc biệt đấy",
-            "Tớ có một điều bất ngờ nhỏ...",
-            "Dành riêng cho cậu!!! ✨",
-            "3... 2... 1..."
-        ];
-
-        const fullMessage = "Chúc cậu một ngày 8/3 thật hạnh phúc, luôn rạng rỡ như ánh mặt trời và gặp thật nhiều may mắn trong cuộc sống. Cậu là một cô gái tuyệt vời và xứng đáng với tất cả những điều ngọt ngào nhất thế giới này! ❤️";
-
-        const myImages = [
-            'https://flowersight.com/hoa-mau-hong-dam/300/40?random=1',
-            'https://picsum.photos/300/400?random=2',
-            'https://picsum.photos/300/400?random=3',
-            'https://picsum.photos/300/400?random=4'
-        ];
-
-        let currentPhrase = 0;
-        let typingStarted = false;
-
         function startExperience() {
-            // Phát nhạc YouTube khi nhấn nút
-            if (player && player.playVideo) {
+            if (isReady && player) {
+                player.unMute();
+                player.setVolume(100);
                 player.playVideo();
             }
-
             document.getElementById('start-screen').style.display = 'none';
             const textEl = document.getElementById('text-sequence');
             textEl.style.display = 'block';
-            runTextSequence();
+            runSequence(0);
         }
 
-        /* --- (Các hàm runTextSequence, openBook, typeWriter... giữ nguyên như cũ) --- */
-        function runTextSequence() {
+        function runSequence(idx) {
             const textEl = document.getElementById('text-sequence');
-            if (currentPhrase < phrases.length) {
-                textEl.innerText = phrases[currentPhrase];
+            if (idx < phrases.length) {
+                textEl.innerText = phrases[idx];
                 textEl.className = 'fade-in';
                 setTimeout(() => {
                     textEl.className = 'fade-out';
-                    setTimeout(() => {
-                        currentPhrase++;
-                        runTextSequence();
-                    }, 800);
-                }, 2000);
+                    setTimeout(() => runSequence(idx + 1), 800);
+                }, 2500);
             } else {
                 textEl.style.display = 'none';
-                showMainContent();
+                showCard();
             }
         }
 
-        function showMainContent() {
+        function showCard() {
             document.getElementById('photo-float-container').style.display = 'block';
             document.getElementById('main-content').style.display = 'flex';
-            createFloatingImages();
+            createFloats();
         }
 
-        function createFloatingImages() {
+        function createFloats() {
             const container = document.getElementById('photo-float-container');
-            for (let i = 0; i < 15; i++) {
+            const imgs = ['https://picsum.photos/200/300?random=1', 'https://picsum.photos/200/300?random=2', 'https://picsum.photos/200/300?random=3'];
+            for(let i=0; i<15; i++) {
                 const img = document.createElement('img');
-                img.src = myImages[i % myImages.length];
+                img.src = imgs[i%3];
                 img.className = 'floating-img';
                 img.style.left = Math.random() * 90 + '%';
-                img.style.animationDuration = (10 + Math.random() * 10) + 's';
-                img.style.animationDelay = (Math.random() * -20) + 's';
-                img.style.setProperty('--rot', (Math.random() - 0.5) * 60 + 'deg');
+                img.style.animationDuration = (10 + Math.random()*10) + 's';
+                img.style.setProperty('--rot', (Math.random()-0.5)*40 + 'deg');
                 container.appendChild(img);
             }
         }
 
+        let typed = false;
         function openBook() {
-            const book = document.getElementById('myBook');
-            if(!book.classList.contains('open')) {
-                book.classList.add('open');
-                if (!typingStarted) {
-                    typingStarted = true;
-                    setTimeout(() => typeWriter(fullMessage, 0), 1000);
-                }
-            } else {
-                book.classList.remove('open');
+            document.getElementById('myBook').classList.toggle('open');
+            if(!typed) {
+                typed = true;
+                setTimeout(() => typeWriter(fullMessage, 0), 1000);
+                for(let i=0; i<30; i++) createHeart();
             }
         }
 
@@ -210,17 +299,38 @@
             }
         }
 
+        function createHeart() {
+            const h = document.createElement('div');
+            h.innerHTML = '❤️';
+            h.className = 'confetti';
+            h.style.left = '50%'; h.style.top = '50%';
+            h.style.fontSize = (Math.random()*20+10)+'px';
+            document.body.appendChild(h);
+            const a = Math.random()*Math.PI*2, v = Math.random()*8+4;
+            let px = window.innerWidth/2, py = window.innerHeight/2, op = 1;
+            const m = setInterval(() => {
+                px += Math.cos(a)*v; py += Math.sin(a)*v; op -= 0.02;
+                h.style.left = px+'px'; h.style.top = py+'px'; h.style.opacity = op;
+                if(op <= 0) { clearInterval(m); h.remove(); }
+            }, 20);
+        }
+
+        // Star background
         const canvas = document.getElementById('bgCanvas');
         const ctx = canvas.getContext('2d');
         let stars = [];
         function initStars() {
             canvas.width = window.innerWidth; canvas.height = window.innerHeight;
             stars = [];
-            for(let i=0; i<100; i++) stars.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, s: Math.random()*2, o: Math.random(), v: Math.random() * 0.5 });
+            for(let i=0; i<100; i++) stars.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, s: Math.random()*2, o: Math.random(), v: Math.random()*0.5 });
         }
         function drawStars() {
             ctx.clearRect(0,0,canvas.width,canvas.height);
-            stars.forEach(s => { ctx.fillStyle = `rgba(255, 255, 255, ${s.o})`; ctx.beginPath(); ctx.arc(s.x, s.y, s.s, 0, Math.PI*2); ctx.fill(); s.y += s.v; if(s.y > canvas.height) s.y = 0; });
+            stars.forEach(s => {
+                ctx.fillStyle = `rgba(255,255,255,${s.o})`;
+                ctx.beginPath(); ctx.arc(s.x, s.y, s.s, 0, Math.PI*2); ctx.fill();
+                s.y += s.v; if(s.y > canvas.height) s.y = 0;
+            });
             requestAnimationFrame(drawStars);
         }
         window.onload = () => { initStars(); drawStars(); };
