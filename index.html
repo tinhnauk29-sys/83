@@ -2,339 +2,339 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gửi Cậu 8/3 ✨</title>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@500&display=swap" rel="stylesheet">
+    <title>TSP - Chu trình Hamilton & Đỉnh đổi màu hoạt họa</title>
     <style>
-        :root {
-            --pink-dark: #d4145a;
-            --pink-main: #ff1493;
-            --pink-light: #ffb6c1;
-            --gold: #ffd700;
-            --card-bg: #fff5f7;
-        }
-
-        body, html {
-            margin: 0; padding: 0;
-            width: 100%; height: 100%;
-            background: #000;
-            font-family: 'Quicksand', sans-serif;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #bgCanvas {
-            position: fixed;
-            top: 0; left: 0;
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        /* Màn hình bắt đầu */
-        #start-screen {
-            position: relative;
-            z-index: 1000;
-            text-align: center;
-        }
-        .btn-start {
-            padding: 18px 40px;
-            background: linear-gradient(45deg, var(--pink-dark), var(--pink-main));
-            border: none;
-            color: white;
-            border-radius: 50px;
-            cursor: pointer;
-            font-size: 1.3rem;
-            font-weight: bold;
-            box-shadow: 0 10px 20px rgba(255, 20, 147, 0.4);
-            transition: 0.3s;
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-
-        /* Chuỗi văn bản dẫn dắt */
-        #text-sequence {
-            display: none;
-            position: relative;
-            z-index: 500;
-            font-size: 1.8rem;
-            text-align: center;
-            color: white;
-            text-shadow: 0 0 15px var(--pink-main);
-            font-style: italic;
-            padding: 20px;
-        }
-
-        /* Ảnh trôi */
-        #photo-float-container {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: 5;
-            pointer-events: none;
-        }
-        .floating-img {
-            position: absolute;
-            width: 150px;
-            border-radius: 10px;
-            border: 3px solid white;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            opacity: 0.5;
-            animation: floatDown linear infinite;
-        }
-        @keyframes floatDown {
-            from { transform: translateY(-110vh) rotate(var(--rot)); }
-            to { transform: translateY(110vh) rotate(var(--rot)); }
-        }
-
-        /* THIỆP 3D */
-        #main-content {
-            display: none;
-            position: relative;
-            z-index: 1000;
-            perspective: 2000px;
-        }
-
-        .book {
-            position: relative;
-            width: 320px;
-            height: 450px;
-            transform-style: preserve-3d;
-            transition: transform 1.2s cubic-bezier(0.15, 0.45, 0.3, 1);
-        }
-
-        .cover {
-            position: absolute;
-            width: 100%; height: 100%;
-            background: linear-gradient(135deg, var(--pink-dark) 0%, var(--pink-main) 100%);
-            border-radius: 5px 15px 15px 5px;
-            box-shadow: 10px 10px 30px rgba(0,0,0,0.5);
-            transform-origin: left;
-            z-index: 10;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            transition: transform 1s;
-            backface-visibility: hidden;
-        }
-
-        .book.open .cover { transform: rotateY(-150deg); }
-
-        .page-inside {
-            position: absolute;
-            width: 100%; height: 100%;
-            background: var(--card-bg);
-            border-radius: 0 15px 15px 0;
-            padding: 30px;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            z-index: 5;
-            box-shadow: inset 10px 0 20px rgba(0,0,0,0.1);
-        }
-
-        .heart-icon { font-size: 4rem; animation: beat 1.2s infinite; }
-        @keyframes beat { 50% { transform: scale(1.1); } }
-
-        #typing-text { 
-            font-size: 1.1rem; 
-            line-height: 1.6; 
-            color: #444; 
-            text-align: justify;
-            margin-top: 15px;
-        }
-
-        .hint {
-            position: absolute;
-            bottom: -60px;
-            width: 100%;
-            text-align: center;
-            color: white;
-            font-size: 0.9rem;
-            opacity: 0.7;
-        }
-
-        /* Hiệu ứng ẩn hiện */
-        .fade-in { animation: fadeIn 0.8s forwards; }
-        .fade-out { animation: fadeOut 0.8s forwards; }
-        @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
-        @keyframes fadeOut { from {opacity: 1;} to {opacity: 0;} }
-
-        /* Tim bay */
-        .confetti { position: absolute; z-index: 1001; pointer-events: none; }
-        
-        /* Ẩn trình phát YouTube */
-        #youtube-player { position: absolute; width: 0; height: 0; opacity: 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; flex-direction: column; align-items: center; background: #f4f7f6; margin: 0; padding: 20px; }
+        .header { text-align: center; margin-bottom: 20px; color: #2c3e50; }
+        .container { display: flex; gap: 20px; width: 100%; max-width: 1300px; height: 750px; }
+        canvas { background: white; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); cursor: crosshair; flex-grow: 1; border: 1px solid #dcdfe6; }
+        .sidebar { width: 320px; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; flex-direction: column; }
+        h2 { color: #1a73e8; margin-top: 0; font-size: 1.4rem; border-bottom: 2px solid #e8f0fe; padding-bottom: 10px; }
+        .instructions { font-size: 0.85rem; color: #5f6368; line-height: 1.6; margin-bottom: 20px; background: #f8f9fa; padding: 12px; border-radius: 8px; border-left: 4px solid #1a73e8; }
+        .btn-group { display: flex; flex-direction: column; gap: 10px; }
+        button { padding: 12px; cursor: pointer; border: none; border-radius: 8px; font-weight: 600; transition: 0.3s; font-size: 0.9rem; }
+        button:disabled { background: #e0e0e0; color: #a0a0a0; cursor: not-allowed; }
+        .btn-solve { background: #1a73e8; color: white; }
+        .btn-solve:hover:not(:disabled) { background: #174ea6; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(26,115,232,0.3); }
+        .btn-clear { background: #f1f3f4; color: #3c4043; }
+        .btn-clear:hover { background: #dadce0; }
+        #status-box { margin-top: 15px; padding: 12px; border-radius: 8px; font-size: 0.9rem; background: #e8f0fe; color: #1967d2; font-weight: 500; }
+        #result-display { margin-top: 15px; font-size: 0.9rem; color: #202124; line-height: 1.5; flex-grow: 1; overflow-y: auto; border-top: 1px solid #eee; padding-top: 10px; }
+        .highlight { color: #f2994a; font-weight: bold; font-size: 1.1rem; }
+        .highlight-node { color: #ff69b4; font-weight: bold; } /* Màu hồng cho text kết quả */
     </style>
 </head>
 <body>
 
-    <canvas id="bgCanvas"></canvas>
-    <div id="youtube-player"></div>
-
-    <div id="start-screen">
-        <button class="btn-start" onclick="startExperience()">Bấm vào đây để có bất ngờ 😎😎😎</button>
+    <div class="header">
+        <h1>Giải Toán Người Giao Hàng (TSP)</h1>
+        <p>Tìm Chu trình Hamilton tối ưu & Hoạt họa đỉnh đổi màu</p>
     </div>
 
-    <div id="text-sequence"></div>
-
-    <div id="photo-float-container"></div>
-
-    <div id="main-content">
-        <div class="book" id="myBook">
-            <div class="cover" onclick="openBook()">
-                <div style="border: 2px solid rgba(255,255,255,0.4); padding: 20px; margin: 20px; text-align: center; color: white;">
-                    <div class="heart-icon">😺</div>
-                    <h2 style="font-family: 'Dancing Script', cursive; font-size: 2rem;">Gửi Thanh Hà...</h2>
-                    <p>8 tháng 3 ý nghĩa</p>
-                </div>
-                <small style="color: var(--gold); position: absolute; bottom: 20px;">Chạm để mở thiệp ✨</small>
+    <div class="container">
+        <div class="sidebar">
+            <h2>Bảng Điều Khiển</h2>
+            <div class="instructions">
+                • <b>Double Click:</b> Tạo đỉnh (tên không trùng).<br>
+                • <b>Nối cạnh:</b> Click Đỉnh 1 ➔ Click Đỉnh 2.<br>
+                • <b>Kéo thả:</b> Di chuyển vị trí đỉnh.<br>
+                • <b>Chuột phải:</b> Xóa đỉnh/cạnh.
             </div>
-            <div class="page-inside">
-                <h2 style="color: var(--pink-dark); text-align: center; font-family: 'Dancing Script', cursive; font-size: 1.8rem; margin-bottom: 5px;">Happy Women's Day!</h2>
-                <center><hr style="width: 60%; border: 0.5px solid var(--pink-light);"></center>
-                <div id="typing-text"></div>
-                <div style="margin-top: auto; text-align: right; color: var(--pink-dark); font-weight: bold; font-family: 'Dancing Script', cursive; font-size: 1.2rem;">
-                    - From F6 with Love -
-                </div>
+            
+            <div class="btn-group">
+                <button id="solveBtn" class="btn-solve" onclick="solveTSP()">TÌM ĐƯỜNG TỐI ƯU</button>
+                <button class="btn-clear" onclick="resetGraph()">XÓA TẤT CẢ</button>
             </div>
+
+            <div id="status-box">Sẵn sàng.</div>
+            <div id="result-display"></div>
         </div>
-        <div class="hint">Bấm vào thiệp để xem điều bất ngờ</div>
+        
+        <canvas id="tspCanvas" width="900" height="700"></canvas>
     </div>
 
-    <script src="https://www.youtube.com/iframe_api"></script>
+<script>
+    const canvas = document.getElementById('tspCanvas');
+    const ctx = canvas.getContext('2d');
+    const R = 22; 
+    
+    // Màu sắc
+    const COLOR_DEFAULT_NODE = "#3c4043";
+    const COLOR_HIGHLIGHT_NODE = "#ff69b4"; // Hot Pink
+    const COLOR_SELECTED_NODE = "#1a73e8";
+    const COLOR_EDGE_NORMAL = "#e0e0e0";
+    const COLOR_EDGE_PATH = "#f2994a"; // Cam cho đường đi
 
-    <script>
-        // CÀI ĐẶT
-        const youtubeId = "jPjQJYKhhk4"; // ID bài Phép Màu
-        const phrases = [
-            "Chào Thanh Hà...",
-            "F6 chúc Thanh Hà một ngày 8/3 tuyệt vời ",
-            "Sau đây có chút bất ngờ...",
-            "Sẵn sàng chưa? ✨",
-            "3... 2... 1..."
-        ];
-        const fullMessage = "Chúc Thanh Hà một ngày 8/3 thật hạnh phúc, luôn rạng rỡ như ánh mặt trời và gặp thật nhiều may mắn. Cậu là một cô gái tuyệt vời và xứng đáng với tất cả những điều ngọt ngào nhất thế giới này!";
+    let nodes = [];
+    let edges = []; 
+    let selectedNode = null;
+    let draggedNode = null;
+    let solutionPath = []; 
+    let animatedStep = 0;
 
-        let player;
-        let isReady = false;
+    // --- TIỆN ÍCH TỌA ĐỘ ---
+    function getPos(e) {
+        const rect = canvas.getBoundingClientRect();
+        return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+    }
 
-        function onYouTubeIframeAPIReady() {
-            player = new YT.Player('youtube-player', {
-                videoId: youtubeId,
-                playerVars: { 'autoplay': 0, 'controls': 0, 'loop': 1, 'playlist': youtubeId },
-                events: { 'onReady': () => { isReady = true; } }
-            });
+    function getNodeAt(x, y) {
+        return nodes.find(n => Math.hypot(n.x - x, n.y - y) < R + 5);
+    }
+
+    // --- HÀM VẼ ĐỒ THỊ ---
+    function drawLine(n1, n2, color, weight, isResult = false, hasArrow = false) {
+        const angle = Math.atan2(n2.y - n1.y, n2.x - n1.x);
+        const sX = n1.x + R * Math.cos(angle);
+        const sY = n1.y + R * Math.sin(angle);
+        const eX = n2.x - R * Math.cos(angle);
+        const eY = n2.y - R * Math.sin(angle);
+
+        ctx.beginPath();
+        ctx.moveTo(sX, sY);
+        ctx.lineTo(eX, eY);
+        ctx.strokeStyle = color;
+        ctx.lineWidth = isResult ? 6 : 2;
+        
+        if (isResult) {
+            ctx.shadowBlur = 12;
+            ctx.shadowColor = color;
+        }
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+
+        if (hasArrow) {
+            const arrowSize = 14;
+            ctx.beginPath();
+            ctx.moveTo(eX, eY);
+            ctx.lineTo(eX - arrowSize * Math.cos(angle - 0.4), eY - arrowSize * Math.sin(angle - 0.4));
+            ctx.lineTo(eX - arrowSize * Math.cos(angle + 0.4), eY - arrowSize * Math.sin(angle + 0.4));
+            ctx.closePath();
+            ctx.fillStyle = color;
+            ctx.fill();
         }
 
-        function startExperience() {
-            if (isReady && player) {
-                player.unMute();
-                player.setVolume(100);
-                player.playVideo();
+        if (weight !== undefined && !isResult) {
+            ctx.fillStyle = "#ea4335";
+            ctx.font = "bold 13px sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText(weight, (n1.x + n2.x)/2, (n1.y + n2.y)/2 - 10);
+        }
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Vẽ cạnh nền (vô hướng)
+        edges.forEach(e => drawLine(e.a, e.b, COLOR_EDGE_NORMAL, e.w));
+
+        // Vẽ lộ trình kết quả (chạy theo animation)
+        if (solutionPath.length > 1) {
+            for (let i = 0; i < animatedStep; i++) {
+                drawLine(solutionPath[i], solutionPath[i+1], COLOR_EDGE_PATH, "", true, true);
             }
-            document.getElementById('start-screen').style.display = 'none';
-            const textEl = document.getElementById('text-sequence');
-            textEl.style.display = 'block';
-            runSequence(0);
         }
 
-        function runSequence(idx) {
-            const textEl = document.getElementById('text-sequence');
-            if (idx < phrases.length) {
-                textEl.innerText = phrases[idx];
-                textEl.className = 'fade-in';
-                setTimeout(() => {
-                    textEl.className = 'fade-out';
-                    setTimeout(() => runSequence(idx + 1), 800);
-                }, 2500);
+        // Vẽ đỉnh
+        nodes.forEach(n => {
+            ctx.beginPath();
+            ctx.arc(n.x, n.y, R, 0, Math.PI * 2);
+            
+            // Xác định màu tô đỉnh
+            if (n === selectedNode) {
+                ctx.fillStyle = COLOR_SELECTED_NODE;
+            } else if (n.isPathHighlight) {
+                ctx.fillStyle = COLOR_HIGHLIGHT_NODE; // Màu hồng khi qua
             } else {
-                textEl.style.display = 'none';
-                showCard();
+                ctx.fillStyle = COLOR_DEFAULT_NODE;
+            }
+            
+            ctx.fill();
+            ctx.strokeStyle = "white";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            ctx.fillStyle = "white";
+            ctx.font = "bold 12px sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText(n.name, n.x, n.y + 5);
+        });
+    }
+
+    // --- SỰ KIỆN CHUỘT ---
+    canvas.addEventListener('dblclick', (e) => {
+        const p = getPos(e);
+        if (getNodeAt(p.x, p.y)) return;
+
+        let name = "";
+        let isUnique = false;
+
+        while (!isUnique) {
+            name = prompt("Nhập tên đỉnh (duy nhất):", `V${nodes.length + 1}`);
+            if (name === null) return; // Nhấn Cancel
+            name = name.trim();
+            if (name === "") {
+                alert("Tên không được để trống!");
+                continue;
+            }
+            // Kiểm tra trùng tên (không phân biệt hoa thường)
+            const exists = nodes.some(n => n.name.toLowerCase() === name.toLowerCase());
+            if (exists) {
+                alert(`Tên "${name}" đã được sử dụng. Vui lòng nhập tên khác!`);
+            } else {
+                isUnique = true;
             }
         }
 
-        function showCard() {
-            document.getElementById('photo-float-container').style.display = 'block';
-            document.getElementById('main-content').style.display = 'flex';
-            createFloats();
-        }
+        // Thêm thuộc tính isPathHighlight mặc định là false
+        nodes.push({ x: p.x, y: p.y, name, isPathHighlight: false });
+        draw();
+    });
 
-        function createFloats() {
-            const container = document.getElementById('photo-float-container');
-            const imgs = ['517591505_1276783754146484_4660794120051857008_n.jpg', 'tha1.jpg', 'tha2.jpg'];
-            for(let i=0; i<15; i++) {
-                const img = document.createElement('img');
-                img.src = imgs[i%3];
-                img.className = 'floating-img';
-                img.style.left = Math.random() * 90 + '%';
-                img.style.animationDuration = (10 + Math.random()*10) + 's';
-                img.style.setProperty('--rot', (Math.random()-0.5)*40 + 'deg');
-                container.appendChild(img);
+    canvas.addEventListener('mousedown', (e) => {
+        const p = getPos(e);
+        const node = getNodeAt(p.x, p.y);
+        if (node) {
+            if (selectedNode && selectedNode !== node) {
+                const w = prompt(`Nhập trọng số cho cạnh ${selectedNode.name} - ${node.name}:`, "10");
+                if (w && !isNaN(w)) {
+                    // Cập nhật hoặc thêm cạnh mới
+                    edges = edges.filter(e => !((e.a === selectedNode && e.b === node) || (e.a === node && e.b === selectedNode)));
+                    edges.push({ a: selectedNode, b: node, w: parseFloat(w) });
+                }
+                selectedNode = null;
+            } else {
+                selectedNode = node;
+                draggedNode = node;
+                resetPathHighlights(); // Reset màu hồng khi tương tác lại
+                solutionPath = []; 
+                animatedStep = 0;
+            }
+        } else {
+            selectedNode = null;
+        }
+        draw();
+    });
+
+    canvas.addEventListener('mousemove', (e) => {
+        if (draggedNode) {
+            const p = getPos(e);
+            draggedNode.x = p.x; draggedNode.y = p.y;
+            draw();
+        }
+    });
+
+    window.addEventListener('mouseup', () => draggedNode = null);
+
+    canvas.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        const p = getPos(e);
+        const idx = nodes.findIndex(n => Math.hypot(n.x - p.x, n.y - p.y) < R);
+        if (idx > -1) {
+            const del = nodes[idx];
+            nodes.splice(idx, 1);
+            edges = edges.filter(e => e.a !== del && e.b !== del);
+            resetPathHighlights();
+            solutionPath = []; animatedStep = 0;
+            draw();
+        }
+    });
+
+    // Reset trạng thái highlight của tất cả các đỉnh
+    function resetPathHighlights() {
+        nodes.forEach(n => n.isPathHighlight = false);
+    }
+
+    // --- THUẬT TOÁN QUAY LUI (HAMILTONIAN CYCLE) ---
+    function solveTSP() {
+        if (nodes.length < 2) return alert("Cần tối thiểu 2 đỉnh!");
+        
+        let bestPath = null;
+        let minWeight = Infinity;
+        let startNode = nodes[0]; // Điểm gốc
+
+        function findHamilton(curr, visited, currentPath, currentWeight) {
+            if (visited.size === nodes.length) {
+                let backEdge = edges.find(e => (e.a === curr && e.b === startNode) || (e.b === curr && e.a === startNode));
+                if (backEdge) {
+                    let total = currentWeight + backEdge.w;
+                    if (total < minWeight) {
+                        minWeight = total;
+                        bestPath = [...currentPath, startNode];
+                    }
+                }
+                return;
+            }
+
+            for (let edge of edges) {
+                let next = null;
+                if (edge.a === curr) next = edge.b;
+                else if (edge.b === curr) next = edge.a;
+
+                if (next && !visited.has(next)) {
+                    visited.add(next);
+                    currentPath.push(next);
+                    findHamilton(next, visited, currentPath, currentWeight + edge.w);
+                    currentPath.pop();
+                    visited.delete(next);
+                }
             }
         }
 
-        let typed = false;
-        function openBook() {
-            document.getElementById('myBook').classList.toggle('open');
-            if(!typed) {
-                typed = true;
-                setTimeout(() => typeWriter(fullMessage, 0), 1000);
-                for(let i=0; i<30; i++) createHeart();
+        document.getElementById('status-box').innerText = "Đang tìm chu trình tối ưu...";
+        resetPathHighlights(); // Xóa highlight cũ trước khi giải
+        solutionPath = []; animatedStep = 0; // Reset animation cũ
+        draw(); // Vẽ lại canvas sạch
+
+        findHamilton(startNode, new Set([startNode]), [startNode], 0);
+
+        if (bestPath) {
+            solutionPath = bestPath;
+            animatedStep = 0;
+            document.getElementById('solveBtn').disabled = true;
+            document.getElementById('result-display').innerHTML = `
+                <b>Chu trình tìm được:</b><br>
+                <span class="highlight">${bestPath.map(n => n.name).join(' ➔ ')}</span><br>
+                Tổng chi phí: <span class="highlight">${minWeight}</span>
+            `;
+            
+            // Bắt đầu đỉnh đầu tiên là màu hồng
+            if (bestPath.length > 0) {
+                bestPath[0].isPathHighlight = true;
+                draw(); // Vẽ đỉnh đầu tiên màu hồng trước
             }
+            
+            setTimeout(animate, 600); // Bắt đầu animation sau một khoảng trễ
+        } else {
+            alert("Lỗi: Không tìm thấy Chu trình Hamilton!\n\nGợi ý: Đồ thị phải khép kín. Đảm bảo mọi đỉnh đều có đường nối và có thể quay về điểm xuất phát.");
+            document.getElementById('status-box').innerText = "Không tìm thấy đường đi.";
         }
+    }
 
-        function typeWriter(text, i) {
-            if (i < text.length) {
-                document.getElementById("typing-text").innerHTML = text.substring(0, i + 1);
-                setTimeout(() => typeWriter(text, i + 1), 50);
+    // --- HÀM HOẠT HỌA (ANIMATION) CẬP NHẬT MÀU ĐỈNH ---
+    function animate() {
+        if (animatedStep < solutionPath.length - 1) {
+            animatedStep++;
+            
+            // Đỉnh đích của cạnh hiện tại (solutionPath[animatedStep]) thành màu hồng
+            if (solutionPath[animatedStep]) {
+                solutionPath[animatedStep].isPathHighlight = true;
             }
+            
+            draw(); // Vẽ lại canvas với cạnh mới và đỉnh đổi màu
+            setTimeout(animate, 600); // Tốc độ chạy mũi tên và đổi màu đỉnh
+        } else {
+            document.getElementById('solveBtn').disabled = false;
+            document.getElementById('status-box').innerText = "Mô phỏng hoàn tất.";
         }
+    }
 
-        function createHeart() {
-            const h = document.createElement('div');
-            h.innerHTML = '❤️';
-            h.className = 'confetti';
-            h.style.left = '50%'; h.style.top = '50%';
-            h.style.fontSize = (Math.random()*20+10)+'px';
-            document.body.appendChild(h);
-            const a = Math.random()*Math.PI*2, v = Math.random()*8+4;
-            let px = window.innerWidth/2, py = window.innerHeight/2, op = 1;
-            const m = setInterval(() => {
-                px += Math.cos(a)*v; py += Math.sin(a)*v; op -= 0.02;
-                h.style.left = px+'px'; h.style.top = py+'px'; h.style.opacity = op;
-                if(op <= 0) { clearInterval(m); h.remove(); }
-            }, 20);
-        }
-
-        // Star background
-        const canvas = document.getElementById('bgCanvas');
-        const ctx = canvas.getContext('2d');
-        let stars = [];
-        function initStars() {
-            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-            stars = [];
-            for(let i=0; i<100; i++) stars.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, s: Math.random()*2, o: Math.random(), v: Math.random()*0.5 });
-        }
-        function drawStars() {
-            ctx.clearRect(0,0,canvas.width,canvas.height);
-            stars.forEach(s => {
-                ctx.fillStyle = `rgba(255,255,255,${s.o})`;
-                ctx.beginPath(); ctx.arc(s.x, s.y, s.s, 0, Math.PI*2); ctx.fill();
-                s.y += s.v; if(s.y > canvas.height) s.y = 0;
-            });
-            requestAnimationFrame(drawStars);
-        }
-        window.onload = () => { initStars(); drawStars(); };
-        window.onresize = initStars;
-    </script>
+    function resetGraph() {
+        nodes = []; edges = []; solutionPath = []; animatedStep = 0;
+        document.getElementById('result-display').innerHTML = "";
+        document.getElementById('status-box').innerText = "Đồ thị trống.";
+        document.getElementById('solveBtn').disabled = false;
+        draw();
+    }
+</script>
 </body>
 </html>
